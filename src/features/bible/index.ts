@@ -1,0 +1,1 @@
+export { BiblePage } from './BiblePage';
