@@ -15,12 +15,12 @@ interface ScheduleWidgetProps {
 
 // Category Specific Colors
 const CATEGORY_STYLE: Record<string, { bar: string; bg: string; text: string; tag: string }> = {
-  worship:   { bar: '#0066FF', bg: '#F7FBFF', text: '#0054D1', tag: '#EAF2FE' }, // Blue
-  care:      { bar: '#00BF40', bg: '#F2FFF6', text: '#009632', tag: '#D9FFE6' }, // Green
-  wedding:   { bar: '#FF4242', bg: '#FFFAFA', text: '#E52222', tag: '#FEECEC' }, // Red
-  education: { bar: '#FF9200', bg: '#FFFCF7', text: '#D47800', tag: '#FEF4E6' }, // Orange
-  admin:     { bar: '#737373', bg: '#F7F7F7', text: '#5C5C5C', tag: '#DCDCDC' }, // Neutral
-  sermon:    { bar: '#FF5E00', bg: '#FFFAF7', text: '#D94B00', tag: '#FEEEE5' }, // Red Orange
+  worship:   { bar: 'var(--polaris-blue-50)', bg: 'var(--polaris-state-info-bg)', text: 'var(--polaris-state-info)', tag: 'var(--polaris-blue-5)' }, // Blue
+  care:      { bar: 'var(--polaris-green-50)', bg: 'var(--polaris-state-success-bg)', text: 'var(--polaris-state-success)', tag: 'var(--polaris-green-5)' }, // Green
+  wedding:   { bar: 'var(--polaris-red-50)', bg: 'var(--polaris-state-error-bg)', text: 'var(--polaris-state-error)', tag: 'var(--polaris-red-5)' }, // Red
+  education: { bar: 'var(--polaris-orange-50)', bg: 'var(--polaris-state-warning-bg)', text: 'var(--polaris-state-warning)', tag: 'var(--polaris-orange-5)' }, // Orange
+  admin:     { bar: 'var(--polaris-neutral-500)', bg: 'var(--polaris-neutral-50)', text: 'var(--polaris-neutral-600)', tag: 'var(--polaris-neutral-200)' }, // Neutral
+  sermon:    { bar: 'var(--polaris-orange-60)', bg: 'var(--polaris-orange-5)', text: 'var(--polaris-orange-60)', tag: 'var(--polaris-orange-10)' }, // Red Orange
 };
 
 function formatTime(dateStr: string) {
@@ -84,8 +84,7 @@ export function ScheduleWidget({ schedules, selectedDate, onDateChange, onAddEve
               key={mode}
               onClick={()=>setViewMode(mode)}
               className={cn('px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-md transition-all',
-                viewMode===mode ? 'text-white shadow-sm' : 'text-slate-500 hover:text-slate-700')}
-              style={viewMode===mode ? { background:'linear-gradient(135deg,#3B6EFF,#7C3AED)' } : undefined}
+                viewMode===mode ? 'bg-nova-secondary text-white shadow-sm' : 'text-slate-500 hover:text-slate-700')}
             >{mode==='weekly'?'Week':'Month'}</button>
           ))}
         </div>
@@ -123,10 +122,9 @@ export function ScheduleWidget({ schedules, selectedDate, onDateChange, onAddEve
             return (
               <button key={iso} onClick={()=>onDateChange(date)}
                 className={cn('relative flex flex-col items-center justify-center w-8 h-8 mx-auto rounded-full text-[12px] font-semibold transition-all',
-                  isSelected ? 'text-white shadow-md' :
+                  isSelected ? 'bg-nova-secondary text-white shadow-md' :
                   isToday ? 'font-bold ring-2 ring-offset-1 text-primary-600 border-primary-100' :
                   'text-slate-600 hover:bg-slate-100')}
-                style={isSelected ? { background:'linear-gradient(135deg,#3B6EFF,#7C3AED)' } : undefined}
               >
                 {date.getDate()}
                 {hasEvents && !isSelected && (

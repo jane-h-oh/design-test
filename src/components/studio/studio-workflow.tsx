@@ -61,7 +61,7 @@ export function StudioWorkflow() {
             <div
               key={item.id}
               className={`rounded-3xl px-4 py-4 ${
-                stage === item.id ? 'bg-slate-950 text-white' : stage > item.id ? 'bg-[var(--color-primary-soft)] text-primary' : 'bg-slate-50 text-slate-400'
+                stage === item.id ? 'bg-slate-950 text-white' : stage > item.id ? 'bg-accent-brand-bg text-primary' : 'bg-slate-50 text-slate-400'
               }`}
             >
               <p className="text-xs font-semibold uppercase tracking-[0.24em]">{item.title}</p>
@@ -74,7 +74,7 @@ export function StudioWorkflow() {
       {stage === 1 ? (
         <section className="rounded-[32px] border border-white/70 bg-white p-6 shadow-[0_24px_80px_rgba(15,23,42,0.06)]">
           <div className="flex flex-col gap-6">
-            <div className="rounded-[28px] border border-dashed border-[#bed2ff] bg-[var(--color-primary-soft)] p-6">
+            <div className="rounded-[28px] border border-dashed border-accent-brand-bg-hover bg-accent-brand-bg p-6">
               <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                 <div>
                   <p className="text-sm font-semibold text-primary">Stage 1</p>
@@ -96,7 +96,7 @@ export function StudioWorkflow() {
                   value={mainVerse}
                   onChange={(event) => setMainVerse(event.target.value)}
                   placeholder="예: 요한복음 3:16"
-                  className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-[#bed2ff] focus:ring-4 focus:ring-[#edf3ff]"
+                  className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-accent-brand-bg-hover focus:ring-4 focus:ring-accent-brand-bg"
                 />
               </div>
 
@@ -107,7 +107,7 @@ export function StudioWorkflow() {
                   onChange={(event) => setManuscript(event.target.value)}
                   placeholder="주일 설교 원고, 소그룹 나눔용 메시지, 카드뉴스로 바꾸고 싶은 초안을 입력해 주세요."
                   rows={16}
-                  className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-4 text-sm leading-6 outline-none transition focus:border-[#bed2ff] focus:ring-4 focus:ring-[#edf3ff]"
+                  className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-4 text-sm leading-6 outline-none transition focus:border-accent-brand-bg-hover focus:ring-4 focus:ring-accent-brand-bg"
                 />
               </div>
             </div>
@@ -129,7 +129,7 @@ export function StudioWorkflow() {
       {stage === 2 ? (
         <section className="rounded-[32px] border border-white/70 bg-white p-6 shadow-[0_24px_80px_rgba(15,23,42,0.06)]">
           <div className="flex flex-col items-center justify-center gap-6 py-10 text-center">
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[var(--color-primary-soft)]">
+            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-accent-brand-bg">
               <Loader2 className="h-8 w-8 animate-spin text-primary" />
             </div>
             <div>
@@ -193,7 +193,7 @@ export function StudioWorkflow() {
               <p className="mt-2 text-sm text-slate-500">{content.cardNews.subtitle}</p>
               <div className="mt-5 space-y-3">
                 {content.cardNews.slides.map((slide) => (
-                  <div key={slide} className="rounded-2xl bg-[var(--color-primary-soft)] p-4 text-sm leading-6 text-[var(--color-primary-deep)]">
+                  <div key={slide} className="rounded-2xl bg-accent-brand-bg p-4 text-sm leading-6 text-accent-brand-strong">
                     {slide}
                   </div>
                 ))}
@@ -217,7 +217,7 @@ export function StudioWorkflow() {
               <p className="text-sm font-semibold text-primary">나눔지</p>
               <h3 className="mt-2 text-2xl font-semibold text-slate-950">{content.sharingNote.headline}</h3>
               <p className="mt-4 text-sm leading-6 text-slate-600">{content.sharingNote.body}</p>
-              <div className="mt-6 rounded-2xl border border-dashed border-[#bed2ff] bg-[var(--color-primary-soft)] p-4 text-sm leading-6 text-[var(--color-primary-deep)]">
+              <div className="mt-6 rounded-2xl border border-dashed border-accent-brand-bg-hover bg-accent-brand-bg p-4 text-sm leading-6 text-accent-brand-strong">
                 {content.sharingNote.actionPrompt}
               </div>
             </article>

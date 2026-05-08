@@ -18,24 +18,24 @@ export function AppShell({ children }: Readonly<{ children: ReactNode }>) {
   const pathname = usePathname();
 
   return (
-    <div className="min-h-screen bg-[#F6F7FF]">
-      <aside className="fixed inset-y-0 left-0 z-40 hidden w-[250px] flex-col bg-white px-5 py-6 md:flex shadow-[2px_0_20px_rgba(109,40,217,0.06)]">
+    <div className="min-h-screen bg-background">
+      <aside className="fixed inset-y-0 left-0 z-40 hidden w-[250px] flex-col bg-white px-5 py-6 md:flex shadow-polaris-sm">
         <Link href="/dashboard" className="flex items-center gap-3 px-1 py-2 hover:opacity-80 transition-opacity">
           {/* Logo Icon — 십자가 × AI 대화 심볼 */}
           <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
             <rect width="40" height="40" rx="10" fill="url(#logoGradient)"/>
             {/* Cross */}
-            <rect x="17" y="9" width="4" height="14" rx="2" fill="white"/>
-            <rect x="11" y="15" width="16" height="4" rx="2" fill="white"/>
+            <rect x="17" y="9" width="4" height="14" rx="2" fill="var(--polaris-static-white)"/>
+            <rect x="11" y="15" width="16" height="4" rx="2" fill="var(--polaris-static-white)"/>
             {/* Chat bubble with minus — bottom right */}
-            <rect x="20" y="24" width="12" height="9" rx="3" fill="white" fillOpacity="0.9"/>
-            <rect x="23" y="28" width="6" height="1.8" rx="0.9" fill="#7C69D8"/>
+            <rect x="20" y="24" width="12" height="9" rx="3" fill="var(--polaris-static-white)" fillOpacity="0.9"/>
+            <rect x="23" y="28" width="6" height="1.8" rx="0.9" fill="var(--polaris-purple-50)"/>
             {/* Bubble tail */}
-            <path d="M22 33 L20 36 L25 33Z" fill="white" fillOpacity="0.9"/>
+            <path d="M22 33 L20 36 L25 33Z" fill="var(--polaris-static-white)" fillOpacity="0.9"/>
             <defs>
               <linearGradient id="logoGradient" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
-                <stop stopColor="#8B7EE8"/>
-                <stop offset="1" stopColor="#6B5FD6"/>
+                <stop stopColor="var(--polaris-violet-40)"/>
+                <stop offset="1" stopColor="var(--polaris-purple-50)"/>
               </linearGradient>
             </defs>
           </svg>
@@ -86,7 +86,7 @@ export function AppShell({ children }: Readonly<{ children: ReactNode }>) {
         <div className="px-4 py-6 md:px-8 md:py-8">{children}</div>
       </main>
 
-      <nav className="fixed inset-x-0 bottom-0 z-40 bg-white/95 px-3 py-2 shadow-[0_-4px_20px_rgba(0,0,0,0.04)] backdrop-blur md:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-40 bg-white/95 px-3 py-2 shadow-polaris-sm backdrop-blur md:hidden">
         <div className="grid grid-cols-5 gap-1">
           {navItems.map((item) => {
             const isActive = pathname === item.href;

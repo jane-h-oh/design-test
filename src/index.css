@@ -13,6 +13,11 @@
   --color-background: var(--polaris-surface-canvas);
   --color-surface: var(--polaris-layer-surface);
   --color-border: var(--polaris-line-neutral);
+  --color-primary-soft: var(--polaris-accent-brand-bg);
+  --color-primary-deep: var(--polaris-accent-brand-strong);
+  --app-gradient-nova-main: linear-gradient(135deg, var(--polaris-blue-50) 0%, var(--polaris-purple-50) 55%, var(--polaris-red-50) 100%);
+  --app-gradient-nova-secondary: linear-gradient(135deg, var(--polaris-blue-50) 0%, var(--polaris-purple-50) 100%);
+  --app-gradient-nova-dark: linear-gradient(180deg, var(--polaris-neutral-1000) 0%, var(--polaris-neutral-900) 100%);
 }
 
 body {

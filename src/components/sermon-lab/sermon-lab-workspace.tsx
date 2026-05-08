@@ -293,8 +293,7 @@ export function SermonLabWorkspace() {
                   setSermonContent(selectedArchive.content);
                   setSelectedArchive(null);
                 }}
-                className="px-5 py-2.5 text-sm font-bold text-white rounded-xl shadow-md hover:shadow-lg transition-all"
-                style={{ background: 'linear-gradient(135deg, #3B6EFF, #7C3AED)' }}
+                className="bg-nova-secondary px-5 py-2.5 text-sm font-bold text-white rounded-xl shadow-md hover:shadow-lg transition-all"
               >
                 이 원고로 불러오기
               </button>

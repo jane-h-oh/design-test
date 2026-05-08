@@ -89,21 +89,21 @@ interface PrayerItem {
 }
 
 const TAG_OPTIONS = [
-  { label: '회복', bg: 'bg-[#F2FFF6]', text: 'text-[#009632] ring-1 ring-inset ring-[#ACFCC7]' }, // Green
-  { label: '진로', bg: 'bg-[#F7FBFF]', text: 'text-[#0054D1] ring-1 ring-inset ring-[#C9DEFE]' }, // Blue
-  { label: '사업', bg: 'bg-[#FFFCF7]', text: 'text-[#D47800] ring-1 ring-inset ring-[#FEE6C6]' }, // Orange
-  { label: '가정', bg: 'bg-[#FFFAFA]', text: 'text-[#E52222] ring-1 ring-inset ring-[#FED5D5]' }, // Red
-  { label: '믿음', bg: 'bg-[#FFFAF7]', text: 'text-[#D94B00] ring-1 ring-inset ring-[#FED9C4]' }, // Red Orange
-  { label: '기타', bg: 'bg-[#F7F7F7]', text: 'text-[#5C5C5C] ring-1 ring-inset ring-[#C4C4C4]' }, // Neutral
+  { label: '회복', bg: 'bg-state-success-bg', text: 'text-state-success ring-1 ring-inset ring-state-success' }, // Green
+  { label: '진로', bg: 'bg-state-info-bg', text: 'text-state-info ring-1 ring-inset ring-state-info' }, // Blue
+  { label: '사업', bg: 'bg-state-warning-bg', text: 'text-state-warning ring-1 ring-inset ring-state-warning' }, // Orange
+  { label: '가정', bg: 'bg-state-error-bg', text: 'text-state-error ring-1 ring-inset ring-state-error' }, // Red
+  { label: '믿음', bg: 'bg-orange-5', text: 'text-orange-60 ring-1 ring-inset ring-orange-20' }, // Red Orange
+  { label: '기타', bg: 'bg-neutral-50', text: 'text-neutral-600 ring-1 ring-inset ring-neutral-300' }, // Neutral
 ];
 
 const INITIAL_PRAYERS: PrayerItem[] = [
-  { id: 'p1', name: '김성도 성도님', tag: '회복', tagBg: 'bg-[#F2FFF6]', tagText: 'text-[#009632] ring-1 ring-inset ring-[#ACFCC7]', prayer: '최근 위장 수술 후 회복 중입니다. 빠른 쾌유와 가정의 평안을 위해.' },
-  { id: 'p2', name: '이청년 형제', tag: '진로', tagBg: 'bg-[#F7FBFF]', tagText: 'text-[#0054D1] ring-1 ring-inset ring-[#C9DEFE]', prayer: '상반기 취업 준비 중입니다. 지치지 않는 믿음과 열린 길을 위해.' },
-  { id: 'p3', name: '박집사 가정', tag: '사업', tagBg: 'bg-[#FFFCF7]', tagText: 'text-[#D47800] ring-1 ring-inset ring-[#FEE6C6]', prayer: '새 사업터에 주님의 인도하심과 정직한 일터를 위해.' },
-  { id: 'p4', name: '최권사님', tag: '가정', tagBg: 'bg-[#FFFAFA]', tagText: 'text-[#E52222] ring-1 ring-inset ring-[#FED5D5]', prayer: '자녀들의 신앙 회복과 멀리 있는 손주들의 건강을 위해 기도합니다.' },
-  { id: 'p5', name: '한성도 성도님', tag: '믿음', tagBg: 'bg-[#FFFAF7]', tagText: 'text-[#D94B00] ring-1 ring-inset ring-[#FED9C4]', prayer: '초신자로서 신앙의 뿌리가 깊게 내려지고 교회 생활에 잘 적응하도록.' },
-  { id: 'p6', name: '선교사 김바울', tag: '기타', tagBg: 'bg-[#F7F7F7]', tagText: 'text-[#5C5C5C] ring-1 ring-inset ring-[#C4C4C4]', prayer: '현지 사역지의 안전과 비자 연장 문제가 순조롭게 해결되기를.' },
+  { id: 'p1', name: '김성도 성도님', tag: '회복', tagBg: 'bg-state-success-bg', tagText: 'text-state-success ring-1 ring-inset ring-state-success', prayer: '최근 위장 수술 후 회복 중입니다. 빠른 쾌유와 가정의 평안을 위해.' },
+  { id: 'p2', name: '이청년 형제', tag: '진로', tagBg: 'bg-state-info-bg', tagText: 'text-state-info ring-1 ring-inset ring-state-info', prayer: '상반기 취업 준비 중입니다. 지치지 않는 믿음과 열린 길을 위해.' },
+  { id: 'p3', name: '박집사 가정', tag: '사업', tagBg: 'bg-state-warning-bg', tagText: 'text-state-warning ring-1 ring-inset ring-state-warning', prayer: '새 사업터에 주님의 인도하심과 정직한 일터를 위해.' },
+  { id: 'p4', name: '최권사님', tag: '가정', tagBg: 'bg-state-error-bg', tagText: 'text-state-error ring-1 ring-inset ring-state-error', prayer: '자녀들의 신앙 회복과 멀리 있는 손주들의 건강을 위해 기도합니다.' },
+  { id: 'p5', name: '한성도 성도님', tag: '믿음', tagBg: 'bg-orange-5', tagText: 'text-orange-60 ring-1 ring-inset ring-orange-20', prayer: '초신자로서 신앙의 뿌리가 깊게 내려지고 교회 생활에 잘 적응하도록.' },
+  { id: 'p6', name: '선교사 김바울', tag: '기타', tagBg: 'bg-neutral-50', tagText: 'text-neutral-600 ring-1 ring-inset ring-neutral-300', prayer: '현지 사역지의 안전과 비자 연장 문제가 순조롭게 해결되기를.' },
 ];
 
 // ── Utils ─────────────────────────────────────────────────────
@@ -374,8 +374,7 @@ export default function DashboardPage() {
           <div className="flex justify-end gap-3 pt-2">
             <button onClick={closeScheduleModal} className="px-5 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-100 rounded-xl transition-colors">취소</button>
             <button onClick={handleScheduleSave}
-              className="px-5 py-2.5 text-sm font-bold text-white rounded-xl shadow-md hover:shadow-lg hover:opacity-95 transition-all"
-              style={{ background: 'linear-gradient(135deg, #3B6EFF, #7C3AED)' }}>
+              className="bg-nova-secondary px-5 py-2.5 text-sm font-bold text-white rounded-xl shadow-md hover:shadow-lg hover:opacity-95 transition-all">
               저장
             </button>
           </div>

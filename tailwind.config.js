@@ -1,6 +1,5 @@
 /** @type {import('tailwindcss').Config} */
 import polarisPreset from '@polaris/ui/tailwind';
-import colors from 'tailwindcss/colors';
 
 export default {
   content: [
@@ -12,48 +11,55 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Polaris Office NOVA — Brand Blue
+        // Existing app aliases backed by Polaris tokens.
         primary: {
-          50:  '#EEF2FF',
-          100: '#C7D4FF',
-          200: '#97B8FF',
-          300: '#6F70FF',
-          400: '#4186FF',
-          500: '#2863EB',
-          600: '#1A4DD4',
-          700: '#1539A8',
-          800: '#10297B',
-          900: '#0A1A52',
-          DEFAULT: '#2863EB',
+          50:  'var(--polaris-blue-5)',
+          100: 'var(--polaris-blue-10)',
+          200: 'var(--polaris-blue-20)',
+          300: 'var(--polaris-blue-30)',
+          400: 'var(--polaris-blue-40)',
+          500: 'var(--polaris-blue-50)',
+          600: 'var(--polaris-blue-60)',
+          700: 'var(--polaris-blue-70)',
+          800: 'var(--polaris-blue-80)',
+          900: 'var(--polaris-blue-90)',
+          DEFAULT: 'var(--polaris-accent-brand-normal)',
         },
-        // Polaris Neutral Gray
-        slate: colors.slate,
+        slate: {
+          50: 'var(--polaris-neutral-50)',
+          100: 'var(--polaris-neutral-100)',
+          200: 'var(--polaris-neutral-200)',
+          300: 'var(--polaris-neutral-300)',
+          400: 'var(--polaris-neutral-400)',
+          500: 'var(--polaris-neutral-500)',
+          600: 'var(--polaris-neutral-600)',
+          700: 'var(--polaris-neutral-700)',
+          800: 'var(--polaris-neutral-800)',
+          900: 'var(--polaris-neutral-900)',
+        },
         neutral: {
-          50: '#F4F4F6',
-          100: '#E4E4E7',
-          200: '#D4D4D8',
-          300: '#A1A1AA',
-          400: '#71717A',
-          500: '#52525B',
-          600: '#3F3F46',
-          700: '#27272A',
-          800: '#18181B',
-          900: '#0C0C0E',
+          50: 'var(--polaris-neutral-50)',
+          100: 'var(--polaris-neutral-100)',
+          200: 'var(--polaris-neutral-200)',
+          300: 'var(--polaris-neutral-300)',
+          400: 'var(--polaris-neutral-400)',
+          500: 'var(--polaris-neutral-500)',
+          600: 'var(--polaris-neutral-600)',
+          700: 'var(--polaris-neutral-700)',
+          800: 'var(--polaris-neutral-800)',
+          900: 'var(--polaris-neutral-900)',
         },
-        background: '#F6F7FF',
-        surface: '#ffffff',
+        background: 'var(--polaris-surface-canvas)',
+        surface: 'var(--polaris-layer-surface)',
         border: 'var(--color-border)',
       },
       fontFamily: {
         sans: ['Pretendard', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'sans-serif'],
       },
       backgroundImage: {
-        // AI Main Gradient: 135deg Blue→Purple→Pink
-        'nova-main': 'linear-gradient(135deg, #3B6EFF 0%, #8B5CF6 55%, #EC4899 100%)',
-        // Secondary: 135deg Blue→Purple
-        'nova-secondary': 'linear-gradient(135deg, #3B6EFF 0%, #7C3AED 100%)',
-        // Hero dark bg
-        'nova-dark': 'linear-gradient(180deg, #0D0F1A 0%, #141519 100%)',
+        'nova-main': 'var(--app-gradient-nova-main)',
+        'nova-secondary': 'var(--app-gradient-nova-secondary)',
+        'nova-dark': 'var(--app-gradient-nova-dark)',
       },
     },
   },

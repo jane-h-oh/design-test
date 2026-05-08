@@ -45,7 +45,13 @@ export class ContentFactory {
     mainText: string;
     theme?: string;
   }): CardNewsData {
-    const colors = ['#2D5A27', '#8B4513', '#3B82F6', '#F59E0B', '#EF4444'];
+    const colors = [
+      'var(--polaris-green-70)',
+      'var(--polaris-orange-80)',
+      'var(--polaris-blue-50)',
+      'var(--polaris-orange-50)',
+      'var(--polaris-red-50)',
+    ];
     const randomColor = colors[Math.floor(Math.random() * colors.length)];
     
     return {

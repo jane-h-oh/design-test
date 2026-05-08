@@ -7,11 +7,11 @@ import type { Schedule, ScheduleFormData } from '@/types';
 import { formatDate } from '@/lib/utils';
 
 const colorOptions = [
-  { value: '#2D5A27', label: '녹색' },
-  { value: '#8B4513', label: '브라운' },
-  { value: '#3B82F6', label: '파란색' },
-  { value: '#F59E0B', label: '주황색' },
-  { value: '#EF4444', label: '빨간색' },
+  { value: 'var(--polaris-green-70)', label: '녹색' },
+  { value: 'var(--polaris-orange-80)', label: '브라운' },
+  { value: 'var(--polaris-blue-50)', label: '파란색' },
+  { value: 'var(--polaris-orange-50)', label: '주황색' },
+  { value: 'var(--polaris-red-50)', label: '빨간색' },
 ];
 
 export function SchedulePage() {
@@ -23,7 +23,7 @@ export function SchedulePage() {
     startDate: '',
     endDate: '',
     allDay: true,
-    color: '#2D5A27',
+    color: 'var(--polaris-green-70)',
   });
 
   const sortedSchedules = [...schedules].sort((a, b) => 
@@ -46,7 +46,7 @@ export function SchedulePage() {
       startDate: '',
       endDate: '',
       allDay: true,
-      color: '#2D5A27',
+      color: 'var(--polaris-green-70)',
     });
   };
 
@@ -89,7 +89,7 @@ export function SchedulePage() {
                   <div className="flex items-start gap-4">
                     <div 
                       className="w-1 h-full min-h-[60px] rounded-full"
-                      style={{ backgroundColor: schedule.color || '#2D5A27' }}
+                      style={{ backgroundColor: schedule.color || 'var(--polaris-green-70)' }}
                     />
                     <div>
                       <h3 className="text-lg font-semibold text-gray-900">{schedule.title}</h3>
@@ -159,7 +159,7 @@ export function SchedulePage() {
           <Select
             label="색상"
             options={colorOptions}
-            value={formData.color || '#2D5A27'}
+            value={formData.color || 'var(--polaris-green-70)'}
             onChange={(e) => setFormData({ ...formData, color: e.target.value })}
           />
           <div className="flex justify-end gap-3 pt-4">
