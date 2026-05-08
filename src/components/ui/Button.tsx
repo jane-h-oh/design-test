@@ -3,8 +3,8 @@ import { Button as PolarisButton } from '@polaris/ui';
 import { cn } from '@/lib/utils';
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger';
-  size?: 'sm' | 'md' | 'lg';
+  variant?: 'primary' | 'secondary' | 'outline' | 'tertiary' | 'ghost' | 'dark' | 'ai' | 'danger';
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
@@ -13,9 +13,12 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       primary: 'primary',
       secondary: 'secondary',
       outline: 'outline',
+      tertiary: 'tertiary',
       ghost: 'ghost',
+      dark: 'dark',
+      ai: 'ai',
       danger: 'danger',
-    }[variant] as 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger';
+    }[variant] as 'primary' | 'secondary' | 'outline' | 'tertiary' | 'ghost' | 'dark' | 'ai' | 'danger';
 
     return (
       <PolarisButton
