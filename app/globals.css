@@ -1,18 +1,16 @@
 @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css');
+@import '@polaris/ui/styles/tokens.css';
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --color-primary: #0a0b10;
-  --color-primary-soft: #edf4ff;
-  --color-primary-deep: #101828;
-  --color-background: #f8fbff;
-  --color-surface: #ffffff;
-  --color-border: #d8e4f5;
-  --color-copy: #0f172a;
-  --color-copy-muted: #60708a;
+  --color-background: var(--polaris-surface-canvas);
+  --color-surface: var(--polaris-layer-surface);
+  --color-border: var(--polaris-line-neutral);
+  --color-copy: var(--polaris-text-primary);
+  --color-copy-muted: var(--polaris-text-secondary);
 }
 
 * {
@@ -27,9 +25,7 @@ body {
   margin: 0;
   min-height: 100vh;
   overflow-x: hidden;
-  background:
-    radial-gradient(circle at top right, rgba(105, 168, 255, 0.18), transparent 24rem),
-    linear-gradient(180deg, #ffffff 0%, #f7fbff 100%);
+  background-color: var(--color-background);
   color: var(--color-copy);
   font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -49,4 +45,13 @@ textarea {
 
 #__next {
   min-height: 100vh;
+}
+
+/* Hide scrollbar but keep scroll functionality */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }

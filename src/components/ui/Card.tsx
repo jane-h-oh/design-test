@@ -1,21 +1,24 @@
 import { HTMLAttributes, forwardRef } from 'react';
+import {
+  Card as PolarisCard,
+  CardHeader as PolarisCardHeader,
+  CardTitle as PolarisCardTitle,
+} from '@polaris/ui';
 import { cn } from '@/lib/utils';
 
-export interface CardProps extends HTMLAttributes<HTMLDivElement> {}
+export type CardProps = HTMLAttributes<HTMLDivElement>;
 
 export const Card = forwardRef<HTMLDivElement, CardProps>(
   ({ className, children, ...props }, ref) => {
     return (
-      <div
+      <PolarisCard
         ref={ref}
-        className={cn(
-          'bg-surface rounded-xl border border-border p-6 shadow-sm',
-          className
-        )}
+        variant="padded"
+        className={cn('shadow-polaris-sm', className)}
         {...props}
       >
         {children}
-      </div>
+      </PolarisCard>
     );
   }
 );
@@ -25,13 +28,13 @@ Card.displayName = 'Card';
 export const CardHeader = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
   ({ className, children, ...props }, ref) => {
     return (
-      <div
+      <PolarisCardHeader
         ref={ref}
         className={cn('mb-4', className)}
         {...props}
       >
         {children}
-      </div>
+      </PolarisCardHeader>
     );
   }
 );
@@ -41,13 +44,13 @@ CardHeader.displayName = 'CardHeader';
 export const CardTitle = forwardRef<HTMLHeadingElement, HTMLAttributes<HTMLHeadingElement>>(
   ({ className, children, ...props }, ref) => {
     return (
-      <h3
+      <PolarisCardTitle
         ref={ref}
-        className={cn('text-lg font-semibold text-gray-900', className)}
+        className={cn('text-polaris-heading4 text-label-normal', className)}
         {...props}
       >
         {children}
-      </h3>
+      </PolarisCardTitle>
     );
   }
 );

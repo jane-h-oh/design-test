@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import type { Metadata } from 'next';
+import { PolarisProviders } from '@/components/providers/polaris-providers';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -9,8 +10,10 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
   return (
-    <html lang="ko">
-      <body>{children}</body>
+    <html lang="ko" data-theme="light">
+      <body>
+        <PolarisProviders>{children}</PolarisProviders>
+      </body>
     </html>
   );
 }

@@ -26,22 +26,19 @@ export function Modal({ isOpen, onClose, title, children, className }: ModalProp
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div
-        className="absolute inset-0 bg-black/50"
-        onClick={onClose}
-      />
+      <div className="absolute inset-0 bg-layer-overlay" onClick={onClose} />
       <div
         className={cn(
-          'relative bg-surface rounded-xl shadow-xl max-w-lg w-full mx-4 max-h-[90vh] overflow-auto',
+          'relative mx-auto max-h-[90vh] w-[calc(100%-2rem)] max-w-lg overflow-auto rounded-polaris-md border border-line-neutral bg-layer-surface shadow-polaris-lg',
           className
         )}
       >
         {title && (
-          <div className="flex items-center justify-between px-6 py-4 border-b border-border">
-            <h2 className="text-lg font-semibold">{title}</h2>
+          <div className="flex items-center justify-between border-b border-line-neutral px-6 py-4">
+            <h2 className="text-polaris-heading4 text-label-normal">{title}</h2>
             <button
               onClick={onClose}
-              className="p-1 hover:bg-gray-100 rounded-lg transition-colors"
+              className="rounded-polaris-sm p-1 text-label-neutral transition-colors hover:bg-interaction-hover"
             >
               <X className="w-5 h-5" />
             </button>
