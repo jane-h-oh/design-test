@@ -1,303 +1,255 @@
 'use client';
 
-import { useState, useRef } from 'react';
-import { BibleSearchWorkspace } from './bible-search-workspace';
-import { Loader2, Sparkles, History, Archive, Download, Search } from 'lucide-react';
-import { Modal } from '@/components/ui';
-import { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType } from 'docx';
-import { saveAs } from 'file-saver';
+import { useMemo, useState } from 'react';
+import {
+  Archive,
+  BookOpenText,
+  Download,
+  FileText,
+  History,
+  Plus,
+  Search,
+  Sparkles,
+} from 'lucide-react';
+import { Button, Modal, Textarea } from '@/components/ui';
 
-interface ArchivedSermon {
+type VerseResult = {
+  reference: string;
+  text: string;
+};
+
+type ArchivedSermon = {
   id: string;
   date: string;
   title: string;
   content: string;
-}
+};
 
-const ARCHIVE_DATA: ArchivedSermon[] = [
-  { 
-    id: '1', 
-    date: '2026.04.14', 
-    title: '하나님의 크신 사랑과 은혜', 
-    content: '우리가 아직 죄인 되었을 때에 그리스도께서 우리를 위하여 죽으심으로 하나님께서 우리에 대한 자기의 사랑을 확증하셨느니라...\n\n하나님의 사랑은 조건이 없습니다. 그분은 우리의 연약함에도 불구하고 우리를 사랑하십니다. 예수 그리스도의 십자가 사건이 그 증거입니다.' 
+const VERSES: VerseResult[] = [
+  {
+    reference: '로마서 8:28',
+    text: '하나님을 사랑하는 자들에게는 모든 것이 합력하여 선을 이룹니다.',
   },
-  { 
-    id: '2', 
-    date: '2026.04.07', 
-    title: '믿음으로 이기는 세상', 
-    content: '무릇 하나님께로부터 난 자마다 세상을 이기느니라 세상을 이기는 승리는 이것이니 우리의 믿음이니라 (요한일서 5:4)\n\n세상의 거센 파도 속에서도 믿음의 닻을 굳건히 내릴 때 우리는 흔들리지 않습니다. 우리의 믿음은 단순한 긍정이 아니라, 살아계신 하나님에 대한 신뢰입니다.' 
+  {
+    reference: '요한복음 15:5',
+    text: '주님 안에 거할 때 삶과 사역의 열매가 맺힙니다.',
   },
-  { 
-    id: '3', 
-    date: '2026.03.31', 
-    title: '성령의 열매를 맺는 삶', 
-    content: '오직 성령의 열매는 사랑과 희락과 화평과 오래 참음과 자비와 양선과 충성과 온유와 절제니 이같은 것을 금지할 법이 없느니라 (갈라디아서 5:22-23)\n\n우리 안에 거하시는 성령님께 우리 삶의 주권을 내어드릴 때 비로소 진정한 열매가 맺힙니다. 나의 노력으로 맺는 열매가 아닌 성령의 역사로 맺는 열매입니다.' 
-  }
+  {
+    reference: '이사야 40:31',
+    text: '여호와를 앙망하는 자는 새 힘을 얻습니다.',
+  },
+  {
+    reference: '시편 23:1',
+    text: '여호와는 나의 목자시니 내게 부족함이 없습니다.',
+  },
 ];
 
-function QuickSearchPanel({ onInsertVerse }: { onInsertVerse: (ref: string, text: string) => void }) {
-  const [q, setQ] = useState('');
-  const [results, setResults] = useState<{ reference: string; text: string }[]>([]);
-  const [loading, setLoading] = useState(false);
-
-  const handleSearch = async (searchQ = q) => {
-    if (!searchQ.trim()) return;
-    setLoading(true);
-    const res = await fetch(`/api/tools/bible/search?q=${encodeURIComponent(searchQ)}&limit=15&version=basic`);
-    const data = await res.json() as { results: { reference: string; text: string }[] };
-    setResults(data.results || []);
-    setLoading(false);
-  };
-
-  return (
-    <div className="bg-white rounded-[28px] shadow-sm border border-slate-100 flex-1 flex flex-col overflow-hidden">
-      <div className="p-4 border-b border-slate-100">
-        <p className="text-sm font-bold text-slate-900 mb-3 flex items-center gap-2">
-          <Search className="w-3.5 h-3.5 text-slate-400" />
-          성경 구절 검색
-        </p>
-        <div className="flex gap-2">
-          <input
-            value={q}
-            onChange={e => setQ(e.target.value)}
-            onKeyDown={e => e.key === 'Enter' && void handleSearch()}
-            placeholder="키워드 또는 구절 (예: 사랑, 로마 8:28)"
-            className="flex-1 text-xs rounded-xl border border-slate-200 px-3 py-2 outline-none focus:border-primary/50 focus:ring-2 focus:ring-primary/10 placeholder:text-slate-300"
-          />
-          <button
-            onClick={() => void handleSearch()}
-            disabled={loading}
-            className="px-3 py-2 rounded-xl bg-slate-900 text-white text-xs font-bold hover:bg-slate-800 transition-colors disabled:opacity-60 flex items-center"
-          >
-            {loading ? <Loader2 className="w-3 h-3 animate-spin" /> : '검색'}
-          </button>
-        </div>
-      </div>
-      <div className="flex-1 overflow-y-auto p-3 space-y-1.5">
-        {results.length > 0 ? (
-          results.map(v => (
-            <div
-              key={v.reference}
-              onClick={() => onInsertVerse(v.reference, v.text)}
-              className="group p-2.5 rounded-xl border border-transparent hover:border-slate-100 hover:bg-slate-50 cursor-pointer transition-all"
-            >
-              <p className="text-[11px] font-bold text-primary mb-1">{v.reference}</p>
-              <p className="text-[12px] leading-relaxed text-slate-600">{v.text}</p>
-            </div>
-          ))
-        ) : (
-          <div className="flex flex-col items-center justify-center py-10 text-slate-300 gap-2">
-            <Search className="w-6 h-6 opacity-30" />
-            <p className="text-xs">성경 구절을 검색하세요</p>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
+const ARCHIVE_DATA: ArchivedSermon[] = [
+  {
+    id: '1',
+    date: '2026.04.14',
+    title: '하나님의 사랑과 확신',
+    content:
+      '하나님의 사랑은 조건에 따라 흔들리지 않습니다. 우리는 오늘의 불안보다 더 깊은 약속 위에 서 있습니다.',
+  },
+  {
+    id: '2',
+    date: '2026.04.07',
+    title: '믿음으로 이기는 인생',
+    content:
+      '믿음은 현실을 외면하는 태도가 아니라, 하나님이 이미 일하고 계심을 붙드는 고백입니다.',
+  },
+  {
+    id: '3',
+    date: '2026.03.31',
+    title: '성령의 열매를 맺는 삶',
+    content:
+      '성령의 열매는 한순간의 감정이 아니라 매일의 순종 속에서 조용히 자라나는 삶의 증거입니다.',
+  },
+];
 
 export function SermonLabWorkspace() {
-  const [sermonTitle, setSermonTitle] = useState('');
-  const [sermonContent, setSermonContent] = useState('');
-  const [isGenerating, setIsGenerating] = useState(false);
+  const [sermonTitle, setSermonTitle] = useState('사랑 안에 거하는 공동체');
+  const [sermonContent, setSermonContent] = useState(
+    '본문: 요한복음 15장 5절\n\n도입\n우리는 많은 일을 계획하지만, 사역의 열매는 주님 안에 머무는 데서 시작됩니다.\n\n핵심 메시지\n1. 연결됨이 열매보다 먼저입니다.\n2. 말씀 안에 거할 때 방향이 선명해집니다.\n3. 공동체는 서로를 붙들어주는 은혜의 자리입니다.\n\n적용\n이번 주 한 사람에게 먼저 안부를 묻고, 함께 기도할 제목을 나누어보세요.'
+  );
+  const [query, setQuery] = useState('');
   const [selectedArchive, setSelectedArchive] = useState<ArchivedSermon | null>(null);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  const handleInsertVerse = (reference: string, text: string) => {
-    const insertText = `\n${reference} - ${text}\n`;
-    setSermonContent(prev => prev + insertText);
-    
-    // Scroll to bottom
-    setTimeout(() => {
-      if (textareaRef.current) {
-        textareaRef.current.scrollTop = textareaRef.current.scrollHeight;
-      }
-    }, 100);
+  const filteredVerses = useMemo(() => {
+    const normalized = query.trim();
+    if (!normalized) return VERSES;
+    return VERSES.filter(
+      (verse) => verse.reference.includes(normalized) || verse.text.includes(normalized)
+    );
+  }, [query]);
+
+  const insertVerse = (verse: VerseResult) => {
+    setSermonContent((prev) => `${prev}\n\n${verse.reference} - ${verse.text}`);
   };
 
-  const handleGenerateDraft = async () => {
-    if (!sermonTitle.trim() && !sermonContent.trim()) {
-      alert('설교 제목이나 본문을 먼저 입력해주세요.');
-      return;
-    }
-    
-    setIsGenerating(true);
-    
-    // Simulate AI generation with typing effect
-    const draftText = "\n\n[AI 초안]\n사랑하는 성도 여러분, 오늘 우리가 함께 읽은 본문은 깊은 은혜를 담고 있습니다. 하나님의 사랑은 우리의 생각보다 훨씬 더 넓고 깊으며, 우리가 어떤 상황에 처해 있더라도 우리를 찾아오십니다...\n";
-    
-    let i = 0;
-    const typingInterval = setInterval(() => {
-      setSermonContent(prev => prev + draftText.charAt(i));
-      i++;
-      if (textareaRef.current) {
-        textareaRef.current.scrollTop = textareaRef.current.scrollHeight;
-      }
-      if (i >= draftText.length) {
-        clearInterval(typingInterval);
-        setIsGenerating(false);
-      }
-    }, 20); // 20ms per character
+  const generateDraft = () => {
+    setSermonContent((prev) =>
+      `${prev}\n\nAI 초안 메모\n- 메시지의 중심을 '주님 안에 머무는 삶'으로 좁혀보세요.\n- 청중이 바로 실천할 수 있는 작은 적용을 마지막에 배치하면 좋습니다.\n- 공동체의 돌봄 사례를 하나 더하면 설교가 더 따뜻해집니다.`
+    );
   };
 
-  const handleSaveToArchive = () => {
-    // In a real app, this would send data to an API
-    alert('사역 아카이브에 성공적으로 저장되었습니다.');
-  };
-
-  const handleDownloadDocx = async () => {
-    const titleText = sermonTitle || '설교 원고';
-    const lines = sermonContent.split('\n');
-
-    const paragraphs = [
-      new Paragraph({
-        text: titleText,
-        heading: HeadingLevel.HEADING_1,
-        alignment: AlignmentType.CENTER,
-        spacing: { after: 400 },
-      }),
-      ...lines.map(line =>
-        new Paragraph({
-          children: [
-            new TextRun({
-              text: line,
-              size: 24, // 12pt
-              font: '맑은 고딕',
-            }),
-          ],
-          spacing: { line: 360, after: 120 },
-        })
-      ),
-    ];
-
-    const doc = new Document({
-      sections: [{ properties: {}, children: paragraphs }],
-    });
-
-    const blob = await Packer.toBlob(doc);
-    saveAs(blob, `${titleText}.docx`);
+  const loadArchive = (archive: ArchivedSermon) => {
+    setSermonTitle(archive.title);
+    setSermonContent(archive.content);
+    setSelectedArchive(null);
   };
 
   return (
-    <div className="flex h-[calc(100vh-8rem)] gap-6">
-      {/* 1. Sidebar Left (25%): Bible Search */}
-      <div className="w-1/4 h-full flex flex-col bg-white rounded-[28px] shadow-sm border border-slate-100 overflow-hidden">
-        <BibleSearchWorkspace onInsertVerse={handleInsertVerse} />
-      </div>
-
-      {/* 2. Center Main (50%): Text Editor */}
-      <div className="w-2/4 h-full flex flex-col bg-white rounded-[28px] shadow-sm border border-slate-100 p-8 overflow-hidden">
-        <div className="flex items-start justify-between gap-4 mb-6">
-          <input 
-            type="text" 
-            value={sermonTitle}
-            onChange={(e) => setSermonTitle(e.target.value)}
-            placeholder="설교 제목을 입력하세요" 
-            className="text-3xl font-bold text-slate-900 placeholder:text-slate-300 outline-none w-full bg-transparent"
-          />
-          <div className="flex gap-2 shrink-0">
-            <button 
-              onClick={handleSaveToArchive}
-              className="flex items-center gap-2 px-3 py-2 rounded-xl border border-slate-200 text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-colors"
-            >
-              <Archive className="w-4 h-4" />
-              <span>사역 아카이브에 저장</span>
-            </button>
-            <button 
-              onClick={() => void handleDownloadDocx()}
-              className="flex items-center gap-2 px-3 py-2 rounded-xl bg-slate-950 text-sm font-semibold text-white hover:bg-slate-800 transition-colors"
-            >
-              <Download className="w-4 h-4" />
-              <span>Word로 저장</span>
-            </button>
-          </div>
-        </div>
-        <div className="flex-1 relative">
-          <textarea
-            ref={textareaRef}
-            value={sermonContent}
-            onChange={(e) => setSermonContent(e.target.value)}
-            placeholder="이곳에 설교 원고를 작성하세요. 좌측에서 성경 구절을 클릭하면 자동으로 삽입됩니다."
-            className="w-full h-full resize-none outline-none text-lg leading-relaxed text-slate-700 placeholder:text-slate-300 bg-transparent"
-          />
-        </div>
-      </div>
-
-      {/* 3. Sidebar Right (25%): AI Assistant */}
-      <div className="w-1/4 h-full flex flex-col gap-4">
-        <div className="bg-slate-950 rounded-[28px] p-6 text-white shadow-md flex flex-col justify-between relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-primary-500/20 blur-3xl rounded-full -mr-10 -mt-10 pointer-events-none" />
-          
-          <div>
-            <div className="flex items-center gap-2 mb-2">
-              <Sparkles className="w-4 h-4 text-primary-400" />
-              <h3 className="font-semibold text-primary-100">AI 초안 작성</h3>
+    <div className="grid min-h-[calc(100vh-8rem)] gap-6 lg:grid-cols-[320px_1fr_320px]">
+      <aside className="flex flex-col gap-4">
+        <section className="rounded-polaris-lg border border-line-neutral bg-layer-surface p-5 shadow-polaris-sm">
+          <div className="mb-5 flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-polaris-md bg-accent-brand-bg text-accent-brand-normal">
+              <BookOpenText className="h-5 w-5" />
             </div>
-            <p className="text-xs text-slate-400 leading-relaxed mb-6">
-              현재 작성된 제목과 본문, 성경 구절을 바탕으로 AI가 설교 초안을 작성합니다.
-            </p>
+            <div>
+              <h2 className="text-polaris-heading4 text-label-normal">성경 구절</h2>
+              <p className="text-polaris-caption1 text-label-assistive">정적 데모용 추천 본문</p>
+            </div>
           </div>
-          
-          <button 
-            onClick={handleGenerateDraft}
-            disabled={isGenerating}
-            className="w-full bg-white text-slate-950 font-bold py-3 rounded-xl hover:bg-slate-100 transition-all flex justify-center items-center gap-2 disabled:opacity-50"
-          >
-            {isGenerating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
-            {isGenerating ? '작성 중...' : 'AI 초안 생성하기'}
-          </button>
-        </div>
 
-        <div className="bg-white rounded-[28px] p-6 shadow-sm border border-slate-100 flex-1 overflow-y-auto">
-          <h3 className="font-semibold text-slate-900 mb-4 flex items-center gap-2">
-            <History className="w-4 h-4 text-slate-400" />
-            과거 설교 내역
-          </h3>
-          <div className="flex flex-col gap-3">
-            {ARCHIVE_DATA.map((item) => (
-              <div 
-                key={item.id} 
-                onClick={() => setSelectedArchive(item)}
-                className="p-3 rounded-xl border border-slate-100 hover:bg-slate-50 cursor-pointer transition-colors"
+          <label className="mb-4 flex h-11 items-center gap-2 rounded-polaris-sm border border-line-neutral bg-background-base px-3 text-label-neutral">
+            <Search className="h-4 w-4" />
+            <input
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder="구절 또는 키워드"
+              className="w-full bg-transparent text-polaris-body2 outline-none placeholder:text-label-assistive"
+            />
+          </label>
+
+          <div className="space-y-2">
+            {filteredVerses.map((verse) => (
+              <button
+                key={verse.reference}
+                onClick={() => insertVerse(verse)}
+                className="w-full rounded-polaris-md border border-line-neutral bg-background-alternative p-3 text-left transition-colors hover:border-line-strong hover:bg-layer-surface"
               >
-                <p className="text-xs text-slate-400 mb-1">{item.date}</p>
-                <p className="text-sm font-semibold text-slate-700">{item.title}</p>
-              </div>
+                <p className="text-polaris-caption1 font-bold text-accent-brand-normal">{verse.reference}</p>
+                <p className="mt-1 text-polaris-body3 leading-relaxed text-label-neutral">{verse.text}</p>
+              </button>
             ))}
           </div>
+        </section>
+
+        <section className="rounded-polaris-lg border border-line-neutral bg-layer-surface p-5 shadow-polaris-sm">
+          <h2 className="mb-4 flex items-center gap-2 text-polaris-heading4 text-label-normal">
+            <History className="h-4 w-4 text-label-assistive" />
+            과거 설교
+          </h2>
+          <div className="space-y-2">
+            {ARCHIVE_DATA.map((archive) => (
+              <button
+                key={archive.id}
+                onClick={() => setSelectedArchive(archive)}
+                className="w-full rounded-polaris-sm border border-line-neutral bg-background-alternative p-3 text-left transition-colors hover:bg-interaction-hover"
+              >
+                <p className="text-polaris-caption1 font-bold text-label-assistive">{archive.date}</p>
+                <p className="mt-1 text-polaris-body2 font-semibold text-label-normal">{archive.title}</p>
+              </button>
+            ))}
+          </div>
+        </section>
+      </aside>
+
+      <main className="flex min-h-[720px] flex-col rounded-polaris-lg border border-line-neutral bg-layer-surface p-6 shadow-polaris-sm">
+        <div className="mb-5 flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+          <div className="min-w-0 flex-1">
+            <p className="mb-2 inline-flex items-center gap-2 rounded-polaris-pill bg-ai-hover px-3 py-1 text-polaris-caption1 font-bold text-ai-normal">
+              <Sparkles className="h-3.5 w-3.5" />
+              Sermon Lab
+            </p>
+            <input
+              value={sermonTitle}
+              onChange={(event) => setSermonTitle(event.target.value)}
+              className="w-full bg-transparent text-polaris-title text-label-normal outline-none placeholder:text-label-assistive"
+              placeholder="설교 제목"
+            />
+          </div>
+          <div className="flex shrink-0 gap-2">
+            <Button variant="secondary" size="sm">
+              <Archive className="h-4 w-4" />
+              아카이브 저장
+            </Button>
+                    <Button variant="primary" size="sm">
+              <Download className="h-4 w-4" />
+              Word 저장
+            </Button>
+          </div>
         </div>
 
-        <QuickSearchPanel onInsertVerse={handleInsertVerse} />
-      </div>
+        <div className="flex-1 rounded-polaris-md border border-line-neutral bg-background-base p-5">
+          <Textarea
+            value={sermonContent}
+            onChange={(event) => setSermonContent(event.target.value)}
+            className="h-full min-h-[560px] border-0 bg-transparent p-0 text-polaris-body1 leading-8 shadow-none focus-visible:ring-0"
+          />
+        </div>
+      </main>
 
-      {/* ── ARCHIVE POPUP ─────────────────────────────────── */}
-      <Modal 
-        isOpen={!!selectedArchive} 
-        onClose={() => setSelectedArchive(null)} 
+      <aside className="flex flex-col gap-4">
+        <section className="rounded-polaris-lg bg-accent-action-normal p-5 text-static-white shadow-polaris-md">
+          <div className="mb-6">
+            <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-polaris-md bg-static-white/10">
+              <Sparkles className="h-5 w-5" />
+            </div>
+            <h2 className="text-polaris-heading3">AI 초안 작성</h2>
+            <p className="mt-2 text-polaris-body3 leading-relaxed text-static-white/70">
+              현재 제목과 원고를 바탕으로 설교 흐름을 더 선명하게 정리합니다.
+            </p>
+          </div>
+          <button
+            onClick={generateDraft}
+            className="flex h-11 w-full items-center justify-center gap-2 rounded-polaris-sm bg-static-white text-polaris-body2 font-bold text-static-black"
+          >
+            <Plus className="h-4 w-4" />
+            초안 메모 추가
+          </button>
+        </section>
+
+        <section className="rounded-polaris-lg border border-line-neutral bg-layer-surface p-5 shadow-polaris-sm">
+          <h2 className="mb-4 flex items-center gap-2 text-polaris-heading4 text-label-normal">
+            <FileText className="h-4 w-4 text-label-assistive" />
+            설교 구성 체크
+          </h2>
+          <div className="space-y-3">
+            {['본문과 제목 연결', '핵심 메시지 1문장', '청중 적용점', '마무리 기도'].map((item) => (
+              <label key={item} className="flex items-center gap-3 rounded-polaris-sm bg-background-alternative p-3">
+                <input type="checkbox" className="h-4 w-4 accent-[var(--polaris-accent-brand-normal)]" defaultChecked={item !== '마무리 기도'} />
+                <span className="text-polaris-body2 font-medium text-label-neutral">{item}</span>
+              </label>
+            ))}
+          </div>
+        </section>
+      </aside>
+
+      <Modal
+        isOpen={!!selectedArchive}
+        onClose={() => setSelectedArchive(null)}
         title="사역 아카이브 원고"
       >
         {selectedArchive && (
           <div className="grid gap-5">
             <div>
-              <p className="text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider">{selectedArchive.date}</p>
-              <h2 className="text-2xl font-bold text-slate-900 leading-tight">{selectedArchive.title}</h2>
+              <p className="text-polaris-caption1 font-bold text-label-assistive">{selectedArchive.date}</p>
+              <h2 className="mt-1 text-polaris-heading2 text-label-normal">{selectedArchive.title}</h2>
             </div>
-            <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100 max-h-[400px] overflow-y-auto">
-              <p className="text-sm leading-relaxed text-slate-700 whitespace-pre-wrap">{selectedArchive.content}</p>
+            <div className="max-h-96 overflow-y-auto rounded-polaris-md bg-background-alternative p-5">
+              <p className="whitespace-pre-wrap text-polaris-body2 leading-relaxed text-label-neutral">
+                {selectedArchive.content}
+              </p>
             </div>
-            <div className="flex justify-end gap-3 pt-2">
-              <button onClick={() => setSelectedArchive(null)} className="px-5 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-100 rounded-xl transition-colors">닫기</button>
-              <button 
-                onClick={() => {
-                  setSermonTitle(selectedArchive.title);
-                  setSermonContent(selectedArchive.content);
-                  setSelectedArchive(null);
-                }}
-                className="px-5 py-2.5 text-sm font-bold text-white rounded-xl shadow-md hover:shadow-lg transition-all"
-                style={{ background: 'linear-gradient(135deg, #3B6EFF, #7C3AED)' }}
-              >
-                이 원고로 불러오기
-              </button>
+            <div className="flex justify-end gap-2">
+              <Button variant="ghost" onClick={() => setSelectedArchive(null)}>
+                닫기
+              </Button>
+              <Button onClick={() => loadArchive(selectedArchive)}>원고로 불러오기</Button>
             </div>
           </div>
         )}
