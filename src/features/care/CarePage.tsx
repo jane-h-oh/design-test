@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Heart, Plus, Calendar } from 'lucide-react';
+import { Heart, Calendar } from 'lucide-react';
+import { PlusIcon } from '@polaris/ui/icons';
 import { Card, CardContent, CardHeader, CardTitle, Button, Textarea, Input } from '@/components/ui';
 
 interface JournalEntry {
@@ -65,7 +66,7 @@ export function CarePage() {
           <p className="text-gray-500 mt-1">나의 영적 성장과 묵상을 기록하세요</p>
         </div>
         <Button onClick={() => setShowForm(!showForm)}>
-          <Plus className="w-4 h-4 mr-2" />
+          <PlusIcon className="w-4 h-4 mr-2" />
           새 항목
         </Button>
       </div>

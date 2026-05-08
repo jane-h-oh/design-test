@@ -3,6 +3,7 @@
 import type { ChangeEvent } from 'react';
 import { useState } from 'react';
 import { CheckCircle2, Loader2, Sparkles, UploadCloud } from 'lucide-react';
+import { Button, Input, Textarea } from '@/components/ui';
 import type { ContentFactoryOutput, SermonAnalysis } from '@/mcp/types';
 
 type Stage = 1 | 2 | 3;
@@ -92,7 +93,7 @@ export function StudioWorkflow() {
             <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,0.75fr)_minmax(0,1.25fr)]">
               <div className="rounded-[28px] border border-slate-100 p-5">
                 <label className="text-sm font-medium text-slate-600">메인 구절</label>
-                <input
+                <Input
                   value={mainVerse}
                   onChange={(event) => setMainVerse(event.target.value)}
                   placeholder="예: 요한복음 3:16"
@@ -102,7 +103,7 @@ export function StudioWorkflow() {
 
               <div className="rounded-[28px] border border-slate-100 p-5">
                 <label className="text-sm font-medium text-slate-600">설교 원고</label>
-                <textarea
+                <Textarea
                   value={manuscript}
                   onChange={(event) => setManuscript(event.target.value)}
                   placeholder="주일 설교 원고, 소그룹 나눔용 메시지, 카드뉴스로 바꾸고 싶은 초안을 입력해 주세요."
@@ -113,14 +114,15 @@ export function StudioWorkflow() {
             </div>
 
             <div className="flex justify-end">
-              <button
+              <Button
+                variant="dark"
                 onClick={() => void handleProcess()}
                 disabled={!manuscript.trim()}
                 className="inline-flex items-center gap-2 rounded-2xl bg-slate-950 px-5 py-3 text-sm font-medium text-white disabled:cursor-not-allowed disabled:bg-slate-300"
               >
                 <Sparkles className="h-4 w-4" />
                 분석 시작
-              </button>
+              </Button>
             </div>
           </div>
         </section>
@@ -153,13 +155,14 @@ export function StudioWorkflow() {
             </div>
 
             {!isBusy ? (
-              <button
+              <Button
+                variant="dark"
                 onClick={() => setStage(3)}
                 className="inline-flex items-center gap-2 rounded-2xl bg-slate-950 px-5 py-3 text-sm font-medium text-white"
               >
                 <CheckCircle2 className="h-4 w-4" />
                 결과 보기
-              </button>
+              </Button>
             ) : null}
           </div>
         </section>
@@ -174,15 +177,16 @@ export function StudioWorkflow() {
               <p className="mt-2 text-sm leading-6 text-slate-500">{analysis?.summary}</p>
             </div>
             <div className="flex gap-2">
-              <button onClick={() => setStage(1)} className="rounded-2xl border border-slate-200 px-4 py-3 text-sm font-medium text-slate-600">
+              <Button variant="ghost" onClick={() => setStage(1)} className="rounded-2xl border border-slate-200 px-4 py-3 text-sm font-medium text-slate-600">
                 다시 편집
-              </button>
-              <button
+              </Button>
+              <Button
+                variant="dark"
                 onClick={() => navigator.clipboard.writeText(JSON.stringify(content, null, 2))}
                 className="rounded-2xl bg-slate-950 px-4 py-3 text-sm font-medium text-white"
               >
                 결과 복사
-              </button>
+              </Button>
             </div>
           </div>
 

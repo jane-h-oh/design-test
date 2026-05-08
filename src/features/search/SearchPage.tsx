@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Search, Loader2, Copy, Check } from 'lucide-react';
+import { Loader2, Copy } from 'lucide-react';
+import { CheckIcon, SearchIcon } from '@polaris/ui/icons';
 import { Card, CardContent, Input, Button } from '@/components/ui';
 import { bibleTool, type BibleVerse } from '@/api/bible';
 
@@ -51,7 +52,7 @@ export function SearchPage() {
         <CardContent className="p-4">
           <div className="flex gap-2">
             <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
               <Input
                 placeholder="검색어를 입력하세요 (예: 사랑, 믿음,盼望 등)"
                 value={query}
@@ -88,17 +89,19 @@ export function SearchPage() {
                       {verse.text}
                     </p>
                   </div>
-                  <button
+                  <Button
+                    variant="ghost"
+                    size="xs"
                     onClick={() => handleCopy(`${getBookName(verse.book)} ${verse.chapter}:${verse.verse} ${verse.text}`)}
                     className="p-1 hover:bg-gray-200 rounded transition-colors"
                     title="복사"
                   >
                     {copied === `${verse.book}${verse.chapter}${verse.verse}` ? (
-                      <Check className="w-4 h-4 text-green-500" />
+                      <CheckIcon className="w-4 h-4 text-green-500" />
                     ) : (
                       <Copy className="w-4 h-4 text-gray-400" />
                     )}
-                  </button>
+                  </Button>
                 </div>
               ))}
             </div>
@@ -115,7 +118,7 @@ export function SearchPage() {
       {results.length === 0 && query && !isSearching && (
         <Card>
           <CardContent className="text-center py-12">
-            <Search className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+            <SearchIcon className="w-12 h-12 text-gray-300 mx-auto mb-4" />
             <p className="text-gray-500">검색 결과가 없습니다</p>
             <p className="text-sm text-gray-400 mt-1">다른 검색어를 시도해 보세요</p>
           </CardContent>

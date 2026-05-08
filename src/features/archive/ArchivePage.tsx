@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Archive, FileText, Heart, Clock, Trash2, Download } from 'lucide-react';
+import { Archive, FileText, Heart, Clock } from 'lucide-react';
+import { DeleteIcon, DownloadIcon } from '@polaris/ui/icons';
 import { Card, CardContent, Button } from '@/components/ui';
 
 interface ArchiveItem {
@@ -131,10 +132,10 @@ export function ArchivePage() {
                   </div>
                   <div className="flex items-center gap-2">
                     <Button variant="ghost" size="sm">
-                      <Download className="w-4 h-4" />
+                      <DownloadIcon className="w-4 h-4" />
                     </Button>
                     <Button variant="ghost" size="sm">
-                      <Trash2 className="w-4 h-4" />
+                      <DeleteIcon className="w-4 h-4" />
                     </Button>
                   </div>
                 </div>

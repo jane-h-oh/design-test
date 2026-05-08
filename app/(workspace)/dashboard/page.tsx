@@ -1,8 +1,9 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import { Heart, BookMarked, Music, Feather, Plus, Pencil, Trash2, ChevronLeft, ChevronRight } from 'lucide-react';
-import { Input, Modal, Textarea } from '@/components/ui';
+import { Heart, BookMarked, Music, Feather } from 'lucide-react';
+import { ChevronLeftIcon, ChevronRightIcon, DeleteIcon, PencilLineIcon, PlusIcon } from '@polaris/ui/icons';
+import { Button, Input, Modal, Textarea } from '@/components/ui';
 import { Select } from '@/components/ui/Select';
 import { ScheduleWidget } from '@/components/dashboard/ScheduleWidget';
 import {
@@ -255,22 +256,26 @@ export default function DashboardPage() {
                 <h3 className="text-lg font-bold text-slate-900">성도들을 위한 기도</h3>
                 <span className="text-xs font-semibold text-slate-400">{prayers.length}명</span>
               </div>
-              <button
+              <Button
+                variant="tertiary"
+                size="xs"
                 onClick={openPrayerModal}
                 className="flex items-center gap-1.5 px-3 py-2 text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg transition-all"
               >
-                <Plus className="h-3.5 w-3.5" /> 기도제목 추가
-              </button>
+                <PlusIcon className="h-3.5 w-3.5" /> 기도제목 추가
+              </Button>
             </div>
 
             {/* Horizontal swipe scroll */}
             <div className="relative group/slider">
-              <button 
+              <Button
+                variant="ghost"
+                size="xs"
                 onClick={() => scrollPrayers('left')}
                 className="absolute left-0 top-1/2 -translate-y-1/2 -ml-4 z-10 p-2 rounded-full bg-white border border-slate-200 shadow-sm hover:bg-slate-50 text-slate-400 hover:text-slate-600 transition-all opacity-0 group-hover/slider:opacity-100"
               >
-                <ChevronLeft className="h-5 w-5" />
-              </button>
+                <ChevronLeftIcon className="h-5 w-5" />
+              </Button>
 
               <div 
                 ref={scrollRef}
@@ -284,18 +289,22 @@ export default function DashboardPage() {
                     style={{ width: '220px', scrollSnapAlign: 'start' }}
                   >
                     <div className="absolute top-3 right-3 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button
+                      <Button
+                        variant="ghost"
+                        size="xs"
                         onClick={(e) => { e.stopPropagation(); openEditPrayer(prayerItem); }}
                         className="w-6 h-6 rounded-md bg-white border border-slate-200 hover:bg-slate-50 hover:text-slate-700 text-slate-400 flex items-center justify-center transition-colors shadow-sm"
                       >
-                        <Pencil className="h-3 w-3" />
-                      </button>
-                      <button
+                        <PencilLineIcon className="h-3 w-3" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="xs"
                         onClick={(e) => { e.stopPropagation(); removePrayer(prayerItem.id); }}
                         className="w-6 h-6 rounded-md bg-white border border-slate-200 hover:bg-rose-50 hover:text-rose-500 hover:border-rose-200 text-slate-400 flex items-center justify-center transition-colors shadow-sm"
                       >
-                        <Trash2 className="h-3 w-3" />
-                      </button>
+                        <DeleteIcon className="h-3 w-3" />
+                      </Button>
                     </div>
                     <span className={`inline-block px-2.5 py-1 rounded-full text-[10px] font-bold mb-3 ${prayerItem.tagBg} ${prayerItem.tagText}`}>{prayerItem.tag}</span>
                     <p className="text-base font-semibold text-slate-900 mb-2 group-hover:text-primary-600 transition-colors">{prayerItem.name}</p>
@@ -304,12 +313,14 @@ export default function DashboardPage() {
                 ))}
               </div>
 
-              <button 
+              <Button
+                variant="ghost"
+                size="xs"
                 onClick={() => scrollPrayers('right')}
                 className="absolute right-0 top-1/2 -translate-y-1/2 -mr-4 z-10 p-2 rounded-full bg-white border border-slate-200 shadow-sm hover:bg-slate-50 text-slate-400 hover:text-slate-600 transition-all opacity-0 group-hover/slider:opacity-100"
               >
-                <ChevronRight className="h-5 w-5" />
-              </button>
+                <ChevronRightIcon className="h-5 w-5" />
+              </Button>
             </div>
           </div>
 
@@ -372,11 +383,11 @@ export default function DashboardPage() {
             <Textarea rows={3} value={formState.memo} onChange={e=>setFormState({...formState,memo:e.target.value})} placeholder="준비사항이나 기도제목을 기록하세요" />
           </div>
           <div className="flex justify-end gap-3 pt-2">
-            <button onClick={closeScheduleModal} className="px-5 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-100 rounded-xl transition-colors">취소</button>
-            <button onClick={handleScheduleSave}
+            <Button variant="ghost" onClick={closeScheduleModal} className="px-5 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-100 rounded-xl transition-colors">취소</Button>
+            <Button onClick={handleScheduleSave}
               className="bg-nova-secondary px-5 py-2.5 text-sm font-bold text-white rounded-xl shadow-md hover:shadow-lg hover:opacity-95 transition-all">
               저장
-            </button>
+            </Button>
           </div>
         </div>
       </Modal>
@@ -392,13 +403,15 @@ export default function DashboardPage() {
             <label className="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wider">분류 태그</label>
             <div className="flex flex-wrap gap-2 mt-1">
               {TAG_OPTIONS.map(opt => (
-                <button
+                <Button
+                  variant="ghost"
+                  size="xs"
                   key={opt.label}
                   onClick={() => setNewPrayerTag(opt.label)}
                   className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all border-2 ${opt.bg} ${opt.text} ${newPrayerTag === opt.label ? 'border-primary-400 shadow-sm scale-105' : 'border-transparent'}`}
                 >
                   {opt.label}
-                </button>
+                </Button>
               ))}
             </div>
           </div>
@@ -407,12 +420,12 @@ export default function DashboardPage() {
             <Textarea rows={4} value={newPrayerText} onChange={e=>setNewPrayerText(e.target.value)} placeholder="기도가 필요한 상황이나 구체적인 기도제목을 적어주세요." />
           </div>
           <div className="flex justify-end gap-3 pt-2">
-            <button onClick={() => setIsPrayerModalOpen(false)} className="px-5 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-100 rounded-xl transition-colors">취소</button>
-            <button onClick={savePrayer}
+            <Button variant="ghost" onClick={() => setIsPrayerModalOpen(false)} className="px-5 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-100 rounded-xl transition-colors">취소</Button>
+            <Button variant="tertiary" onClick={savePrayer}
               className="px-5 py-2.5 text-sm font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition-all"
             >
               {editingPrayerId ? '수정 내용 저장' : '기도제목 등록'}
-            </button>
+            </Button>
           </div>
         </div>
       </Modal>

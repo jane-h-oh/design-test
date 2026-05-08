@@ -1,7 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { ChevronLeft, ChevronRight, Plus, Users, Hash, Calendar } from 'lucide-react';
+import { Hash, Calendar } from 'lucide-react';
+import { ChevronLeftIcon, ChevronRightIcon, PlusIcon, UserIcon } from '@polaris/ui/icons';
+import { Button } from '@/components/ui';
 import { cn } from '@/lib/utils';
 import { ScheduleItem, WEEKDAYS, STATUS_LABEL, CATEGORY_LABEL } from '@/types/ministry';
 
@@ -80,12 +82,14 @@ export function ScheduleWidget({ schedules, selectedDate, onDateChange, onAddEve
         </div>
         <div className="flex items-center bg-slate-100 rounded-lg p-1 gap-0.5">
           {(['weekly','monthly'] as const).map(mode => (
-            <button
+            <Button
               key={mode}
+              variant="ghost"
+              size="xs"
               onClick={()=>setViewMode(mode)}
               className={cn('px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-md transition-all',
                 viewMode===mode ? 'bg-nova-secondary text-white shadow-sm' : 'text-slate-500 hover:text-slate-700')}
-            >{mode==='weekly'?'Week':'Month'}</button>
+            >{mode==='weekly'?'Week':'Month'}</Button>
           ))}
         </div>
       </div>
@@ -94,16 +98,16 @@ export function ScheduleWidget({ schedules, selectedDate, onDateChange, onAddEve
       <div className="flex items-center justify-between">
         <span className="text-sm font-bold text-slate-800">{displayStr}</span>
         <div className="flex items-center gap-1">
-          <button onClick={()=>onDateChange(new Date())}
+          <Button variant="secondary" size="xs" onClick={()=>onDateChange(new Date())}
             className="px-2.5 py-1 text-[10px] font-bold text-primary-600 bg-primary-50 rounded-lg hover:bg-primary-100 transition-colors mr-1">
             오늘
-          </button>
-          <button onClick={prevPeriod} className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 transition-colors">
-            <ChevronLeft className="h-4 w-4" />
-          </button>
-          <button onClick={nextPeriod} className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 transition-colors">
-            <ChevronRight className="h-4 w-4" />
-          </button>
+          </Button>
+          <Button variant="ghost" size="xs" onClick={prevPeriod} className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 transition-colors">
+            <ChevronLeftIcon className="h-4 w-4" />
+          </Button>
+          <Button variant="ghost" size="xs" onClick={nextPeriod} className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 transition-colors">
+            <ChevronRightIcon className="h-4 w-4" />
+          </Button>
         </div>
       </div>
 
@@ -120,7 +124,7 @@ export function ScheduleWidget({ schedules, selectedDate, onDateChange, onAddEve
             const isSelected=iso===selectedISO;
             const hasEvents=schedules.some(s=>s.startAt.slice(0,10)===iso);
             return (
-              <button key={iso} onClick={()=>onDateChange(date)}
+              <Button key={iso} variant="ghost" size="xs" onClick={()=>onDateChange(date)}
                 className={cn('relative flex flex-col items-center justify-center w-8 h-8 mx-auto rounded-full text-[12px] font-semibold transition-all',
                   isSelected ? 'bg-nova-secondary text-white shadow-md' :
                   isToday ? 'font-bold ring-2 ring-offset-1 text-primary-600 border-primary-100' :
@@ -130,7 +134,7 @@ export function ScheduleWidget({ schedules, selectedDate, onDateChange, onAddEve
                 {hasEvents && !isSelected && (
                   <span className="absolute bottom-0.5 w-1 h-1 rounded-full bg-primary-500" />
                 )}
-              </button>
+              </Button>
             );
           })}
         </div>
@@ -178,7 +182,7 @@ export function ScheduleWidget({ schedules, selectedDate, onDateChange, onAddEve
                 <div className="flex flex-wrap gap-1.5 mt-auto">
                   {schedule.members && schedule.members.length > 0 && (
                     <div className="flex items-center gap-1 bg-white/60 px-2 py-0.5 rounded-md text-[9px] font-bold text-slate-500">
-                      <Users className="h-2.5 w-2.5" />
+                      <UserIcon className="h-2.5 w-2.5" />
                       {schedule.members.join(', ')}
                     </div>
                   )}
@@ -195,7 +199,7 @@ export function ScheduleWidget({ schedules, selectedDate, onDateChange, onAddEve
         }) : (
           <div className="rounded-xl border-2 border-dashed border-slate-100 flex flex-col items-center justify-center py-12 gap-3">
             <div className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center">
-              <ChevronRight className="h-5 w-5 text-slate-200" />
+              <ChevronRightIcon className="h-5 w-5 text-slate-200" />
             </div>
             <p className="text-xs text-slate-400 font-medium text-center leading-relaxed">
               등록된 일정이 없습니다.<br/>
@@ -206,12 +210,12 @@ export function ScheduleWidget({ schedules, selectedDate, onDateChange, onAddEve
       </div>
 
       {/* Add Event CTA - Simple Gray Style as requested before */}
-      <button onClick={()=>onAddEvent(selectedDate)}
+      <Button variant="tertiary" onClick={()=>onAddEvent(selectedDate)}
         className="flex items-center justify-center gap-2 w-full py-3 text-sm font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition-all mt-auto"
       >
-        <Plus className="h-4 w-4" />
+        <PlusIcon className="h-4 w-4" />
         일정 추가
-      </button>
+      </Button>
 
     </div>
   );

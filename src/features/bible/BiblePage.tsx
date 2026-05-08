@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Search, BookOpen, Loader2 } from 'lucide-react';
+import { BookOpen, Loader2 } from 'lucide-react';
+import { SearchIcon } from '@polaris/ui/icons';
 import { Card, CardContent, CardHeader, CardTitle, Input, Button } from '@/components/ui';
 import { bibleTool, type BibleBook, type BibleVerse } from '@/api/bible';
 
@@ -73,7 +74,7 @@ export function BiblePage() {
         <CardContent className="p-4">
           <div className="flex gap-2">
             <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
               <Input
                 placeholder="성경 구절 검색 (예: 사랑, 믿음, 또는 구절: 요한복음 3:16)"
                 value={searchQuery}
@@ -129,7 +130,9 @@ export function BiblePage() {
                 <h3 className="text-xs font-medium text-gray-500 uppercase mb-2">구약</h3>
                 <div className="grid grid-cols-2 gap-1">
                   {oldTestament.map((book) => (
-                    <button
+                    <Button
+                      variant={selectedBook?.abbrev === book.abbrev ? 'primary' : 'ghost'}
+                      size="xs"
                       key={book.abbrev}
                       onClick={() => handleBookSelect(book)}
                       className={`text-left px-2 py-1.5 rounded text-sm transition-colors ${
@@ -139,7 +142,7 @@ export function BiblePage() {
                       }`}
                     >
                       {book.name}
-                    </button>
+                    </Button>
                   ))}
                 </div>
               </div>
@@ -149,7 +152,9 @@ export function BiblePage() {
                 <h3 className="text-xs font-medium text-gray-500 uppercase mb-2">신약</h3>
                 <div className="grid grid-cols-2 gap-1">
                   {newTestament.map((book) => (
-                    <button
+                    <Button
+                      variant={selectedBook?.abbrev === book.abbrev ? 'primary' : 'ghost'}
+                      size="xs"
                       key={book.abbrev}
                       onClick={() => handleBookSelect(book)}
                       className={`text-left px-2 py-1.5 rounded text-sm transition-colors ${
@@ -159,7 +164,7 @@ export function BiblePage() {
                       }`}
                     >
                       {book.name}
-                    </button>
+                    </Button>
                   ))}
                 </div>
               </div>
@@ -181,7 +186,9 @@ export function BiblePage() {
                   {/* 장 네비게이션 */}
                   <div className="flex items-center gap-2 mb-4 overflow-x-auto pb-2">
                     {Array.from({ length: selectedBook.chapters }, (_, i) => i + 1).map((chapter) => (
-                      <button
+                      <Button
+                        variant={selectedChapter === chapter ? 'primary' : 'tertiary'}
+                        size="xs"
                         key={chapter}
                         onClick={() => handleChapterChange(chapter)}
                         className={`px-3 py-1 rounded text-sm whitespace-nowrap transition-colors ${
@@ -191,7 +198,7 @@ export function BiblePage() {
                         }`}
                       >
                         {chapter}
-                      </button>
+                      </Button>
                     ))}
                   </div>
                   

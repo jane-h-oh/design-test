@@ -3,7 +3,9 @@
 import type { ReactNode } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Archive, BookOpenText, CalendarDays, LogOut, Settings, Sparkles, UserCircle2 } from 'lucide-react';
+import { Archive, BookOpenText, CalendarDays, LogOut, Sparkles, UserCircle2 } from 'lucide-react';
+import { SettingsIcon } from '@polaris/ui/icons';
+import { Button } from '@/components/ui';
 import { cn } from '@/lib/utils';
 
 const navItems = [
@@ -11,7 +13,7 @@ const navItems = [
   { href: '/sermon-lab', label: '설교 연구실', icon: BookOpenText },
   { href: '/studio', label: '콘텐츠 스튜디오', icon: Sparkles },
   { href: '/archive', label: '사역 아카이브', icon: Archive },
-  { href: '/settings', label: '설정', icon: Settings },
+  { href: '/settings', label: '설정', icon: SettingsIcon },
 ];
 
 export function AppShell({ children }: Readonly<{ children: ReactNode }>) {
@@ -75,10 +77,10 @@ export function AppShell({ children }: Readonly<{ children: ReactNode }>) {
               <p className="text-xs text-slate-500">main@mokhoemate.ai</p>
             </div>
           </div>
-          <button className="mt-2 flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-red-600 transition-colors">
+          <Button variant="ghost" className="mt-2 flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-red-600 transition-colors">
             로그아웃
             <LogOut className="h-4 w-4" />
-          </button>
+          </Button>
         </div>
       </aside>
 

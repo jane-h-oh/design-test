@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
-import { BookOpen, Calendar, ChevronLeft, ChevronRight, Heart, Sparkles } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui';
+import { BookOpen, Calendar, Heart, Sparkles } from 'lucide-react';
+import { ChevronLeftIcon, ChevronRightIcon } from '@polaris/ui/icons';
+import { Button, Card, CardContent, CardHeader, CardTitle } from '@/components/ui';
 import { cn } from '@/lib/utils';
 
 const getSeasonalInfo = () => {
@@ -68,23 +69,27 @@ export function DashboardPage() {
               사역 캘린더
             </CardTitle>
             <div className="flex items-center gap-2 self-end sm:self-auto">
-              <button
+              <Button
+                variant="ghost"
+                size="xs"
                 onClick={() => setCurrentDate(new Date(year, month - 1, 1))}
                 className="rounded-lg p-1 transition-colors hover:bg-gray-100"
                 aria-label="이전 달"
               >
-                <ChevronLeft className="h-5 w-5" />
-              </button>
+                <ChevronLeftIcon className="h-5 w-5" />
+              </Button>
               <span className="min-w-[96px] text-center text-sm font-medium">
                 {year}년 {monthName}
               </span>
-              <button
+              <Button
+                variant="ghost"
+                size="xs"
                 onClick={() => setCurrentDate(new Date(year, month + 1, 1))}
                 className="rounded-lg p-1 transition-colors hover:bg-gray-100"
                 aria-label="다음 달"
               >
-                <ChevronRight className="h-5 w-5" />
-              </button>
+                <ChevronRightIcon className="h-5 w-5" />
+              </Button>
             </div>
           </CardHeader>
           <CardContent>
@@ -176,24 +181,24 @@ export function DashboardPage() {
             <CardTitle className="text-sm font-medium">빠른 작업</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
-            <button className="flex w-full items-center gap-3 rounded-xl p-3 text-left transition-colors hover:bg-gray-50">
+            <Button variant="ghost" className="flex w-full items-center justify-start gap-3 rounded-xl p-3 text-left transition-colors hover:bg-gray-50">
               <div className="rounded-lg bg-primary/10 p-2">
                 <BookOpen className="h-4 w-4 text-primary" />
               </div>
               <span className="text-sm">성경 연구 바로가기</span>
-            </button>
-            <button className="flex w-full items-center gap-3 rounded-xl p-3 text-left transition-colors hover:bg-gray-50">
+            </Button>
+            <Button variant="ghost" className="flex w-full items-center justify-start gap-3 rounded-xl p-3 text-left transition-colors hover:bg-gray-50">
               <div className="rounded-lg bg-secondary/10 p-2">
                 <Sparkles className="h-4 w-4 text-secondary" />
               </div>
               <span className="text-sm">콘텐츠 초안 생성</span>
-            </button>
-            <button className="flex w-full items-center gap-3 rounded-xl p-3 text-left transition-colors hover:bg-gray-50">
+            </Button>
+            <Button variant="ghost" className="flex w-full items-center justify-start gap-3 rounded-xl p-3 text-left transition-colors hover:bg-gray-50">
               <div className="rounded-lg bg-accent/10 p-2">
                 <Heart className="h-4 w-4 text-accent" />
               </div>
               <span className="text-sm">목양 메모 정리</span>
-            </button>
+            </Button>
           </CardContent>
         </Card>
       </div>

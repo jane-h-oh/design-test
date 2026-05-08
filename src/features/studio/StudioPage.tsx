@@ -1,18 +1,20 @@
 import { useState } from 'react';
 import {
-  ArrowRight,
-  Check,
   Copy,
   FileText,
   Heart,
-  Image,
   LayoutTemplate,
   Loader2,
   PenLine,
-  Share2,
   Sparkles,
 } from 'lucide-react';
-import { Button, Card, CardContent, CardHeader, CardTitle, Textarea } from '@/components/ui';
+import {
+  ArrowRightIcon,
+  CheckIcon,
+  ImageIcon,
+  ShareIcon,
+} from '@polaris/ui/icons';
+import { Button, Card, CardContent, CardHeader, CardTitle, Input, Textarea } from '@/components/ui';
 import { cn } from '@/lib/utils';
 import { contentFactory, type CardNewsData, type QTData, type SermonNoteData } from '@/api/content';
 
@@ -73,10 +75,10 @@ export function StudioPage() {
 
   const stageSteps: Stage[] = ['input', 'process', 'preview'];
   const tabs = [
-    { id: 'cardnews' as const, label: '말씀 카드', icon: Image },
+    { id: 'cardnews' as const, label: '말씀 카드', icon: ImageIcon },
     { id: 'qt' as const, label: 'QT', icon: Heart },
     { id: 'sermon' as const, label: '설교 노트', icon: FileText },
-    { id: 'sns' as const, label: 'SNS', icon: Share2 },
+    { id: 'sns' as const, label: 'SNS', icon: ShareIcon },
   ];
 
   const showEditorOnMobile = mobileStudioPanel === 'editor';
@@ -109,7 +111,7 @@ export function StudioPage() {
                 {currentStage === 'input' ? '원고 입력' : currentStage === 'process' ? '분석 중' : '결과 확인'}
               </span>
             </div>
-            {index < stageSteps.length - 1 && <ArrowRight className="mx-2 hidden h-4 w-4 text-gray-300 sm:block" />}
+            {index < stageSteps.length - 1 && <ArrowRightIcon className="mx-2 hidden h-4 w-4 text-gray-300 sm:block" />}
           </div>
         ))}
       </div>
@@ -125,7 +127,7 @@ export function StudioPage() {
           <CardContent className="space-y-4">
             <div>
               <label className="mb-2 block text-sm font-medium text-gray-700">주요 성경 구절</label>
-              <input
+              <Input
                 type="text"
                 value={mainVerse}
                 onChange={(event) => setMainVerse(event.target.value)}
@@ -167,7 +169,8 @@ export function StudioPage() {
         <div className="space-y-6">
           <div className="rounded-2xl border border-border bg-surface p-1 md:hidden">
             <div className="grid grid-cols-2 gap-1">
-              <button
+              <Button
+                variant={showEditorOnMobile ? 'primary' : 'ghost'}
                 onClick={() => setMobileStudioPanel('editor')}
                 className={cn(
                   'rounded-xl px-4 py-3 text-sm font-medium transition-colors',
@@ -175,8 +178,9 @@ export function StudioPage() {
                 )}
               >
                 원고 입력
-              </button>
-              <button
+              </Button>
+              <Button
+                variant={showPreviewOnMobile ? 'primary' : 'ghost'}
                 onClick={() => setMobileStudioPanel('preview')}
                 className={cn(
                   'rounded-xl px-4 py-3 text-sm font-medium transition-colors',
@@ -184,7 +188,7 @@ export function StudioPage() {
                 )}
               >
                 결과 미리보기
-              </button>
+              </Button>
             </div>
           </div>
 
@@ -199,7 +203,7 @@ export function StudioPage() {
               <CardContent className="space-y-4">
                 <div>
                   <label className="mb-2 block text-sm font-medium text-gray-700">주요 성경 구절</label>
-                  <input
+                  <Input
                     type="text"
                     value={mainVerse}
                     onChange={(event) => setMainVerse(event.target.value)}
@@ -232,7 +236,9 @@ export function StudioPage() {
               <div className="overflow-x-auto border-b border-border pb-2">
                 <div className="flex min-w-max gap-2">
                   {tabs.map((tab) => (
-                    <button
+                    <Button
+                      variant={activeTab === tab.id ? 'primary' : 'ghost'}
+                      size="sm"
                       key={tab.id}
                       onClick={() => setActiveTab(tab.id)}
                       className={cn(
@@ -242,7 +248,7 @@ export function StudioPage() {
                     >
                       <tab.icon className="h-4 w-4" />
                       {tab.label}
-                    </button>
+                    </Button>
                   ))}
                 </div>
               </div>
@@ -252,11 +258,11 @@ export function StudioPage() {
                   <CardHeader>
                     <CardTitle className="flex items-center justify-between gap-3">
                       <span className="flex items-center gap-2">
-                        <Image className="h-5 w-5 text-primary" />
+                        <ImageIcon className="h-5 w-5 text-primary" />
                         카드뉴스 미리보기
                       </span>
                       <Button variant="outline" size="sm" onClick={() => handleCopy(cardNews.title)}>
-                        {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                        {copied ? <CheckIcon className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
                       </Button>
                     </CardTitle>
                   </CardHeader>
@@ -282,7 +288,7 @@ export function StudioPage() {
                         QT 묵상 노트
                       </span>
                       <Button variant="outline" size="sm" onClick={() => handleCopy(qt.verse)}>
-                        {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                        {copied ? <CheckIcon className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
                       </Button>
                     </CardTitle>
                   </CardHeader>
@@ -319,7 +325,7 @@ export function StudioPage() {
                         설교 노트
                       </span>
                       <Button variant="outline" size="sm" onClick={() => handleCopy(sermonNote.title)}>
-                        {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                        {copied ? <CheckIcon className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
                       </Button>
                     </CardTitle>
                   </CardHeader>
@@ -358,7 +364,7 @@ export function StudioPage() {
                 <Card>
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                      <Share2 className="h-5 w-5 text-primary" />
+                      <ShareIcon className="h-5 w-5 text-primary" />
                       SNS 초안
                     </CardTitle>
                   </CardHeader>

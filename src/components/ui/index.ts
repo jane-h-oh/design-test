@@ -7,3 +7,4 @@ export { Badge } from './Badge';
 export { Avatar } from './Avatar';
 export { Modal } from './Modal';
 export { Switch } from './Switch';
+export { Checkbox } from './Checkbox';

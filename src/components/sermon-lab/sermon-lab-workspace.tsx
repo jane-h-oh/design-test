@@ -2,8 +2,9 @@
 
 import { useState, useRef } from 'react';
 import { BibleSearchWorkspace } from './bible-search-workspace';
-import { Loader2, Sparkles, History, Archive, Download, Search } from 'lucide-react';
-import { Modal } from '@/components/ui';
+import { Loader2, Sparkles, Archive } from 'lucide-react';
+import { DownloadIcon, HistoryIcon, SearchIcon } from '@polaris/ui/icons';
+import { Button, Input, Modal, Textarea } from '@/components/ui';
 import { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType } from 'docx';
 import { saveAs } from 'file-saver';
 
@@ -53,24 +54,26 @@ function QuickSearchPanel({ onInsertVerse }: { onInsertVerse: (ref: string, text
     <div className="bg-white rounded-[28px] shadow-sm border border-slate-100 flex-1 flex flex-col overflow-hidden">
       <div className="p-4 border-b border-slate-100">
         <p className="text-sm font-bold text-slate-900 mb-3 flex items-center gap-2">
-          <Search className="w-3.5 h-3.5 text-slate-400" />
+          <SearchIcon className="w-3.5 h-3.5 text-slate-400" />
           성경 구절 검색
         </p>
         <div className="flex gap-2">
-          <input
+          <Input
             value={q}
             onChange={e => setQ(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && void handleSearch()}
             placeholder="키워드 또는 구절 (예: 사랑, 로마 8:28)"
             className="flex-1 text-xs rounded-xl border border-slate-200 px-3 py-2 outline-none focus:border-primary/50 focus:ring-2 focus:ring-primary/10 placeholder:text-slate-300"
           />
-          <button
+          <Button
+            variant="dark"
+            size="sm"
             onClick={() => void handleSearch()}
             disabled={loading}
             className="px-3 py-2 rounded-xl bg-slate-900 text-white text-xs font-bold hover:bg-slate-800 transition-colors disabled:opacity-60 flex items-center"
           >
             {loading ? <Loader2 className="w-3 h-3 animate-spin" /> : '검색'}
-          </button>
+          </Button>
         </div>
       </div>
       <div className="flex-1 overflow-y-auto p-3 space-y-1.5">
@@ -87,7 +90,7 @@ function QuickSearchPanel({ onInsertVerse }: { onInsertVerse: (ref: string, text
           ))
         ) : (
           <div className="flex flex-col items-center justify-center py-10 text-slate-300 gap-2">
-            <Search className="w-6 h-6 opacity-30" />
+            <SearchIcon className="w-6 h-6 opacity-30" />
             <p className="text-xs">성경 구절을 검색하세요</p>
           </div>
         )}
@@ -188,7 +191,7 @@ export function SermonLabWorkspace() {
       {/* 2. Center Main (50%): Text Editor */}
       <div className="w-2/4 h-full flex flex-col bg-white rounded-[28px] shadow-sm border border-slate-100 p-8 overflow-hidden">
         <div className="flex items-start justify-between gap-4 mb-6">
-          <input 
+          <Input
             type="text" 
             value={sermonTitle}
             onChange={(e) => setSermonTitle(e.target.value)}
@@ -196,24 +199,28 @@ export function SermonLabWorkspace() {
             className="text-3xl font-bold text-slate-900 placeholder:text-slate-300 outline-none w-full bg-transparent"
           />
           <div className="flex gap-2 shrink-0">
-            <button 
+            <Button
+              variant="ghost"
+              size="sm"
               onClick={handleSaveToArchive}
               className="flex items-center gap-2 px-3 py-2 rounded-xl border border-slate-200 text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-colors"
             >
               <Archive className="w-4 h-4" />
               <span>사역 아카이브에 저장</span>
-            </button>
-            <button 
+            </Button>
+            <Button
+              variant="dark"
+              size="sm"
               onClick={() => void handleDownloadDocx()}
               className="flex items-center gap-2 px-3 py-2 rounded-xl bg-slate-950 text-sm font-semibold text-white hover:bg-slate-800 transition-colors"
             >
-              <Download className="w-4 h-4" />
+              <DownloadIcon className="w-4 h-4" />
               <span>Word로 저장</span>
-            </button>
+            </Button>
           </div>
         </div>
         <div className="flex-1 relative">
-          <textarea
+          <Textarea
             ref={textareaRef}
             value={sermonContent}
             onChange={(e) => setSermonContent(e.target.value)}
@@ -238,19 +245,20 @@ export function SermonLabWorkspace() {
             </p>
           </div>
           
-          <button 
+          <Button
+            variant="secondary"
             onClick={handleGenerateDraft}
             disabled={isGenerating}
             className="w-full bg-white text-slate-950 font-bold py-3 rounded-xl hover:bg-slate-100 transition-all flex justify-center items-center gap-2 disabled:opacity-50"
           >
             {isGenerating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
             {isGenerating ? '작성 중...' : 'AI 초안 생성하기'}
-          </button>
+          </Button>
         </div>
 
         <div className="bg-white rounded-[28px] p-6 shadow-sm border border-slate-100 flex-1 overflow-y-auto">
           <h3 className="font-semibold text-slate-900 mb-4 flex items-center gap-2">
-            <History className="w-4 h-4 text-slate-400" />
+            <HistoryIcon className="w-4 h-4 text-slate-400" />
             과거 설교 내역
           </h3>
           <div className="flex flex-col gap-3">
@@ -286,8 +294,8 @@ export function SermonLabWorkspace() {
               <p className="text-sm leading-relaxed text-slate-700 whitespace-pre-wrap">{selectedArchive.content}</p>
             </div>
             <div className="flex justify-end gap-3 pt-2">
-              <button onClick={() => setSelectedArchive(null)} className="px-5 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-100 rounded-xl transition-colors">닫기</button>
-              <button 
+              <Button variant="ghost" onClick={() => setSelectedArchive(null)} className="px-5 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-100 rounded-xl transition-colors">닫기</Button>
+              <Button
                 onClick={() => {
                   setSermonTitle(selectedArchive.title);
                   setSermonContent(selectedArchive.content);
@@ -296,7 +304,7 @@ export function SermonLabWorkspace() {
                 className="bg-nova-secondary px-5 py-2.5 text-sm font-bold text-white rounded-xl shadow-md hover:shadow-lg transition-all"
               >
                 이 원고로 불러오기
-              </button>
+              </Button>
             </div>
           </div>
         )}

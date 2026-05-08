@@ -5,10 +5,10 @@ import {
   BookOpen,
   Cross,
   LayoutDashboard,
-  Menu,
-  Settings,
   Sparkles,
 } from 'lucide-react';
+import { MenuIcon, SettingsIcon } from '@polaris/ui/icons';
+import { Button } from '@/components/ui';
 import { cn } from '@/lib/utils';
 import { useAppStore } from '@/store';
 
@@ -17,7 +17,7 @@ const menuItems = [
   { path: '/sermon-lab', icon: BookOpen, label: '설교 연구소' },
   { path: '/studio', icon: Sparkles, label: '콘텐츠 스튜디오' },
   { path: '/archive', icon: Archive, label: '사역 아카이브' },
-  { path: '/settings', icon: Settings, label: '설정' },
+  { path: '/settings', icon: SettingsIcon, label: '설정' },
 ];
 
 interface SidebarProps {
@@ -74,13 +74,15 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
       </nav>
 
       <div className="border-t border-white/10 p-4">
-        <button
+        <Button
+          variant="ghost"
+          size="sm"
           onClick={onToggle}
           className="flex w-full items-center justify-center rounded-lg p-2 transition-colors hover:bg-white/10"
           aria-label="사이드바 접기"
         >
-          <Menu className="h-5 w-5 text-white/70" />
-        </button>
+          <MenuIcon className="h-5 w-5 text-white/70" />
+        </Button>
       </div>
     </aside>
   );

@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { Plus, FileText } from 'lucide-react';
+import { FileText } from 'lucide-react';
+import { PlusIcon } from '@polaris/ui/icons';
 import { Card, CardContent } from '@/components/ui';
-import { Button, Input, Select, Modal } from '@/components/ui';
+import { Button, Checkbox, Input, Select, Modal } from '@/components/ui';
 import { useAppStore } from '@/store';
 import type { Schedule, ScheduleFormData } from '@/types';
 import { formatDate } from '@/lib/utils';
@@ -64,7 +65,7 @@ export function SchedulePage() {
           <p className="text-gray-500 mt-1">교회의 일정을 관리합니다</p>
         </div>
         <Button onClick={() => setIsModalOpen(true)}>
-          <Plus className="w-4 h-4 mr-2" />
+          <PlusIcon className="w-4 h-4 mr-2" />
           일정 추가
         </Button>
       </div>
@@ -147,11 +148,10 @@ export function SchedulePage() {
             />
           </div>
           <div className="flex items-center gap-2">
-            <input
-              type="checkbox"
+            <Checkbox
               id="allDay"
               checked={formData.allDay}
-              onChange={(e) => setFormData({ ...formData, allDay: e.target.checked })}
+              onCheckedChange={(checked) => setFormData({ ...formData, allDay: checked === true })}
               className="w-4 h-4"
             />
             <label htmlFor="allDay" className="text-sm text-gray-700">종일 일정</label>
