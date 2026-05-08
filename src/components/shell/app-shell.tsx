@@ -3,15 +3,7 @@
 import type { ReactNode } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import {
-  Archive,
-  BookOpenText,
-  CalendarDays,
-  LogOut,
-  Settings,
-  Sparkles,
-  UserCircle2,
-} from 'lucide-react';
+import { Archive, BookOpenText, CalendarDays, LogOut, Settings, Sparkles, UserCircle2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const navItems = [
@@ -26,21 +18,34 @@ export function AppShell({ children }: Readonly<{ children: ReactNode }>) {
   const pathname = usePathname();
 
   return (
-    <div className="min-h-screen bg-background-base text-label-normal">
-      <aside className="fixed inset-y-0 left-0 z-polaris-sticky hidden w-[264px] flex-col border-r border-line-neutral bg-layer-surface md:flex">
-        <Link href="/dashboard" className="border-b border-line-neutral px-5 py-5">
-          <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-polaris-md bg-accent-brand-normal text-static-white shadow-polaris-sm">
-              <Sparkles className="h-5 w-5" />
-            </div>
-            <div>
-              <p className="text-polaris-heading4 text-label-normal">목회메이트</p>
-              <p className="text-polaris-caption1 text-label-assistive">Polaris Design System</p>
-            </div>
+    <div className="min-h-screen bg-[#F6F7FF]">
+      <aside className="fixed inset-y-0 left-0 z-40 hidden w-[250px] flex-col bg-white px-5 py-6 md:flex shadow-[2px_0_20px_rgba(109,40,217,0.06)]">
+        <Link href="/dashboard" className="flex items-center gap-3 px-1 py-2 hover:opacity-80 transition-opacity">
+          {/* Logo Icon — 십자가 × AI 대화 심볼 */}
+          <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="40" height="40" rx="10" fill="url(#logoGradient)"/>
+            {/* Cross */}
+            <rect x="17" y="9" width="4" height="14" rx="2" fill="white"/>
+            <rect x="11" y="15" width="16" height="4" rx="2" fill="white"/>
+            {/* Chat bubble with minus — bottom right */}
+            <rect x="20" y="24" width="12" height="9" rx="3" fill="white" fillOpacity="0.9"/>
+            <rect x="23" y="28" width="6" height="1.8" rx="0.9" fill="#7C69D8"/>
+            {/* Bubble tail */}
+            <path d="M22 33 L20 36 L25 33Z" fill="white" fillOpacity="0.9"/>
+            <defs>
+              <linearGradient id="logoGradient" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+                <stop stopColor="#8B7EE8"/>
+                <stop offset="1" stopColor="#6B5FD6"/>
+              </linearGradient>
+            </defs>
+          </svg>
+          <div>
+            <p className="text-base font-extrabold text-slate-900 leading-tight tracking-tight">목회메이트</p>
+            <p className="text-[11px] text-slate-400 font-medium leading-none mt-0.5">Mokhoe Mate</p>
           </div>
         </Link>
 
-        <nav className="flex-1 space-y-1 px-3 py-5">
+        <nav className="mt-8 space-y-1">
           {navItems.map((item) => {
             const isActive = pathname === item.href;
 
@@ -49,10 +54,8 @@ export function AppShell({ children }: Readonly<{ children: ReactNode }>) {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  'flex h-11 items-center gap-3 rounded-polaris-sm px-3 text-polaris-body2 font-medium transition-colors',
-                  isActive
-                    ? 'bg-accent-brand-bg text-accent-brand-normal'
-                    : 'text-label-neutral hover:bg-interaction-hover hover:text-label-normal'
+                  'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors',
+                  isActive ? 'bg-gradient-to-r from-violet-500/10 to-blue-500/10 text-violet-700 font-semibold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
                 )}
               >
                 <item.icon className="h-4 w-4" />
@@ -62,30 +65,28 @@ export function AppShell({ children }: Readonly<{ children: ReactNode }>) {
           })}
         </nav>
 
-        <div className="border-t border-line-neutral p-4">
-          <div className="rounded-polaris-md bg-fill-neutral p-3">
-            <div className="flex items-center gap-3">
-              <div className="flex h-9 w-9 items-center justify-center rounded-polaris-pill bg-static-white text-label-neutral">
-                <UserCircle2 className="h-5 w-5" />
-              </div>
-              <div className="min-w-0">
-                <p className="truncate text-polaris-body2 font-semibold text-label-normal">김다울 목사</p>
-                <p className="truncate text-polaris-caption1 text-label-assistive">main@mokhoemate.ai</p>
-              </div>
+        <div className="mt-auto pt-4">
+          <div className="flex items-center gap-3 rounded-xl px-2 py-2 hover:bg-slate-50 transition-colors">
+            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-100 text-slate-600">
+              <UserCircle2 className="h-5 w-5" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-slate-900">김다울 목사</p>
+              <p className="text-xs text-slate-500">main@mokhoemate.ai</p>
             </div>
           </div>
-          <button className="mt-2 flex h-10 w-full items-center justify-between rounded-polaris-sm px-3 text-polaris-body2 font-medium text-label-neutral transition-colors hover:bg-interaction-hover hover:text-state-error">
+          <button className="mt-2 flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-red-600 transition-colors">
             로그아웃
             <LogOut className="h-4 w-4" />
           </button>
         </div>
       </aside>
 
-      <main className="min-h-screen pb-24 md:pl-[264px] md:pb-0">
-        <div className="mx-auto max-w-[1440px] px-4 py-5 md:px-8 md:py-8">{children}</div>
+      <main className="min-h-screen pb-24 md:pl-[250px] md:pb-0">
+        <div className="px-4 py-6 md:px-8 md:py-8">{children}</div>
       </main>
 
-      <nav className="fixed inset-x-0 bottom-0 z-polaris-sticky border-t border-line-neutral bg-layer-surface/95 px-2 pb-[calc(env(safe-area-inset-bottom)+0.5rem)] pt-2 shadow-polaris-md backdrop-blur md:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-40 bg-white/95 px-3 py-2 shadow-[0_-4px_20px_rgba(0,0,0,0.04)] backdrop-blur md:hidden">
         <div className="grid grid-cols-5 gap-1">
           {navItems.map((item) => {
             const isActive = pathname === item.href;
@@ -95,12 +96,12 @@ export function AppShell({ children }: Readonly<{ children: ReactNode }>) {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  'flex min-h-16 flex-col items-center justify-center gap-1 rounded-polaris-sm px-1 py-2 text-[11px] font-semibold transition-colors',
-                  isActive ? 'bg-accent-brand-bg text-accent-brand-normal' : 'text-label-assistive'
+                  'flex min-h-[64px] flex-col items-center justify-center gap-1 rounded-xl px-1 py-2 text-[11px] font-medium transition-colors',
+                  isActive ? 'text-primary-600' : 'text-slate-500'
                 )}
               >
                 <item.icon className="h-5 w-5" />
-                <span className="truncate">{item.label}</span>
+                {item.label}
               </Link>
             );
           })}

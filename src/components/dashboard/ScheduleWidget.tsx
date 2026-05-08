@@ -1,17 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { Calendar, ChevronLeft, ChevronRight, Hash, Plus, Users } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Plus, Users, Hash, Calendar } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import {
-  CATEGORY_LABEL,
-  CATEGORY_TONE,
-  ScheduleItem,
-  STATUS_LABEL,
-  STATUS_TONE,
-  WEEKDAYS,
-  formatTimeRange,
-} from '@/types/ministry';
+import { ScheduleItem, WEEKDAYS, STATUS_LABEL, CATEGORY_LABEL } from '@/types/ministry';
 
 interface ScheduleWidgetProps {
   schedules: ScheduleItem[];
@@ -21,157 +13,124 @@ interface ScheduleWidgetProps {
   onEditEvent: (schedule: ScheduleItem) => void;
 }
 
-const CATEGORY_BAR: Record<string, string> = {
-  worship: 'bg-blue-50',
-  care: 'bg-green-50',
-  wedding: 'bg-red-50',
-  education: 'bg-yellow-50',
-  admin: 'bg-gray-50',
-  sermon: 'bg-ai-normal',
+// Category Specific Colors
+const CATEGORY_STYLE: Record<string, { bar: string; bg: string; text: string; tag: string }> = {
+  worship:   { bar: '#0066FF', bg: '#F7FBFF', text: '#0054D1', tag: '#EAF2FE' }, // Blue
+  care:      { bar: '#00BF40', bg: '#F2FFF6', text: '#009632', tag: '#D9FFE6' }, // Green
+  wedding:   { bar: '#FF4242', bg: '#FFFAFA', text: '#E52222', tag: '#FEECEC' }, // Red
+  education: { bar: '#FF9200', bg: '#FFFCF7', text: '#D47800', tag: '#FEF4E6' }, // Orange
+  admin:     { bar: '#737373', bg: '#F7F7F7', text: '#5C5C5C', tag: '#DCDCDC' }, // Neutral
+  sermon:    { bar: '#FF5E00', bg: '#FFFAF7', text: '#D94B00', tag: '#FEEEE5' }, // Red Orange
 };
 
-function toISODate(date: Date) {
-  const pad = (n: number) => String(n).padStart(2, '0');
-  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+function formatTime(dateStr: string) {
+  const d = new Date(dateStr);
+  const h = d.getHours();
+  const m = String(d.getMinutes()).padStart(2, '0');
+  return `${h >= 12 ? '오후' : '오전'} ${h % 12 || 12}:${m}`;
 }
 
-export function ScheduleWidget({
-  schedules,
-  selectedDate,
-  onDateChange,
-  onAddEvent,
-  onEditEvent,
-}: ScheduleWidgetProps) {
+export function ScheduleWidget({ schedules, selectedDate, onDateChange, onAddEvent, onEditEvent }: ScheduleWidgetProps) {
   const [viewMode, setViewMode] = useState<'weekly' | 'monthly'>('weekly');
 
-  const todayISO = toISODate(new Date());
-  const selectedISO = toISODate(selectedDate);
-  const year = selectedDate.getFullYear();
-  const month = selectedDate.getMonth();
-
-  const monthCells: Array<Date | null> = [];
-  const firstDay = new Date(year, month, 1).getDay();
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-  for (let i = 0; i < firstDay; i += 1) monthCells.push(null);
-  for (let day = 1; day <= daysInMonth; day += 1) monthCells.push(new Date(year, month, day));
-  while (monthCells.length % 7 !== 0) monthCells.push(null);
-
-  const weekStart = new Date(selectedDate);
-  weekStart.setDate(selectedDate.getDate() - selectedDate.getDay());
-  const weekCells = Array.from({ length: 7 }, (_, index) => {
-    const date = new Date(weekStart);
-    date.setDate(weekStart.getDate() + index);
-    return date;
-  });
-
-  const cells = viewMode === 'monthly' ? monthCells : weekCells;
-  const displayText =
-    viewMode === 'monthly'
-      ? `${year}년 ${month + 1}월`
-      : `${selectedDate.getMonth() + 1}월 ${selectedDate.getDate()}일 주간`;
-  const daySchedules = schedules
-    .filter((schedule) => schedule.startAt.slice(0, 10) === selectedISO)
-    .sort((a, b) => a.startAt.localeCompare(b.startAt));
-
-  const movePeriod = (direction: -1 | 1) => {
-    if (viewMode === 'monthly') {
-      onDateChange(new Date(year, month + direction, 1));
-      return;
-    }
-    const date = new Date(selectedDate);
-    date.setDate(date.getDate() + direction * 7);
-    onDateChange(date);
+  const toISODate = (d: Date) => {
+    const pad = (n: number) => String(n).padStart(2, '0');
+    return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
   };
 
-  return (
-    <section className="flex h-full flex-col gap-5 rounded-polaris-lg border border-line-neutral bg-layer-surface p-5 shadow-polaris-sm">
-      <header className="flex items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-polaris-md bg-accent-brand-bg text-accent-brand-normal">
-            <Calendar className="h-5 w-5" />
-          </div>
-          <div>
-            <p className="text-polaris-heading4 text-label-normal">사역 일정</p>
-            <p className="text-polaris-caption1 text-label-assistive">예배와 돌봄 흐름을 한눈에 확인</p>
-          </div>
-        </div>
+  const todayISO    = toISODate(new Date());
+  const selectedISO = toISODate(selectedDate);
+  const Y = selectedDate.getFullYear();
+  const M = selectedDate.getMonth();
 
-        <div className="flex rounded-polaris-sm bg-fill-normal p-1">
-          {(['weekly', 'monthly'] as const).map((mode) => (
+  const prevPeriod = () => {
+    if (viewMode === 'monthly') { onDateChange(new Date(Y, M-1, 1)); }
+    else { const d=new Date(selectedDate); d.setDate(d.getDate()-7); onDateChange(d); }
+  };
+  const nextPeriod = () => {
+    if (viewMode === 'monthly') { onDateChange(new Date(Y, M+1, 1)); }
+    else { const d=new Date(selectedDate); d.setDate(d.getDate()+7); onDateChange(d); }
+  };
+
+  const monthCells: Array<Date|null> = [];
+  const firstDay = new Date(Y, M, 1).getDay();
+  const daysInMonth = new Date(Y, M+1, 0).getDate();
+  for (let i=0; i<firstDay; i++) monthCells.push(null);
+  for (let d=1; d<=daysInMonth; d++) monthCells.push(new Date(Y, M, d));
+  while (monthCells.length%7 !== 0) monthCells.push(null);
+
+  const weekStart = new Date(selectedDate);
+  weekStart.setDate(selectedDate.getDate()-selectedDate.getDay());
+  const weekCells = Array.from({length:7}, (_,i)=>{ const d=new Date(weekStart); d.setDate(weekStart.getDate()+i); return d; });
+
+  const cells = viewMode==='monthly' ? monthCells : weekCells;
+  const displayStr = viewMode==='monthly' ? `${Y}년 ${M+1}월` : `${selectedDate.getMonth()+1}월 ${selectedDate.getDate()}일 주간`;
+  const daySchedules = schedules.filter(s=>s.startAt.slice(0,10)===selectedISO).sort((a,b)=>a.startAt.localeCompare(b.startAt));
+
+  return (
+    <div className="bg-slate-50 rounded-2xl shadow-sm flex flex-col gap-5 p-6 h-full border border-slate-200">
+
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-full flex items-center justify-center bg-emerald-100 text-emerald-600">
+            <Calendar className="h-4 w-4" />
+          </div>
+          <h3 className="text-lg font-bold text-slate-900">스케줄</h3>
+        </div>
+        <div className="flex items-center bg-slate-100 rounded-lg p-1 gap-0.5">
+          {(['weekly','monthly'] as const).map(mode => (
             <button
               key={mode}
-              onClick={() => setViewMode(mode)}
-              className={cn(
-                'h-8 rounded-polaris-xs px-3 text-polaris-caption1 font-bold transition-colors',
-                viewMode === mode
-                  ? 'bg-layer-surface text-accent-brand-normal shadow-polaris-xs'
-                  : 'text-label-alternative hover:text-label-normal'
-              )}
-            >
-              {mode === 'weekly' ? 'Week' : 'Month'}
-            </button>
+              onClick={()=>setViewMode(mode)}
+              className={cn('px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-md transition-all',
+                viewMode===mode ? 'text-white shadow-sm' : 'text-slate-500 hover:text-slate-700')}
+              style={viewMode===mode ? { background:'linear-gradient(135deg,#3B6EFF,#7C3AED)' } : undefined}
+            >{mode==='weekly'?'Week':'Month'}</button>
           ))}
         </div>
-      </header>
+      </div>
 
+      {/* Navigation */}
       <div className="flex items-center justify-between">
-        <p className="text-polaris-body2 font-bold text-label-normal">{displayText}</p>
+        <span className="text-sm font-bold text-slate-800">{displayStr}</span>
         <div className="flex items-center gap-1">
-          <button
-            onClick={() => onDateChange(new Date())}
-            className="h-8 rounded-polaris-xs bg-accent-brand-bg px-3 text-polaris-caption1 font-bold text-accent-brand-normal"
-          >
+          <button onClick={()=>onDateChange(new Date())}
+            className="px-2.5 py-1 text-[10px] font-bold text-primary-600 bg-primary-50 rounded-lg hover:bg-primary-100 transition-colors mr-1">
             오늘
           </button>
-          <button
-            onClick={() => movePeriod(-1)}
-            className="flex h-8 w-8 items-center justify-center rounded-polaris-xs text-label-alternative hover:bg-interaction-hover"
-            aria-label="이전 기간"
-          >
+          <button onClick={prevPeriod} className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 transition-colors">
             <ChevronLeft className="h-4 w-4" />
           </button>
-          <button
-            onClick={() => movePeriod(1)}
-            className="flex h-8 w-8 items-center justify-center rounded-polaris-xs text-label-alternative hover:bg-interaction-hover"
-            aria-label="다음 기간"
-          >
+          <button onClick={nextPeriod} className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 transition-colors">
             <ChevronRight className="h-4 w-4" />
           </button>
         </div>
       </div>
 
+      {/* Calendar */}
       <div>
-        <div className="mb-2 grid grid-cols-7 text-center">
-          {WEEKDAYS.map((weekday) => (
-            <span key={weekday} className="text-polaris-caption2 font-bold text-label-assistive">
-              {weekday}
-            </span>
-          ))}
+        <div className="grid grid-cols-7 text-center mb-2">
+          {WEEKDAYS.map(w=><span key={w} className="text-[9px] font-bold text-slate-300">{w}</span>)}
         </div>
-        <div className="grid grid-cols-7 gap-y-1 text-center">
-          {cells.map((date, index) => {
-            if (!date) return <div key={`empty-${index}`} />;
-            const iso = toISODate(date);
-            const isToday = iso === todayISO;
-            const isSelected = iso === selectedISO;
-            const hasEvents = schedules.some((schedule) => schedule.startAt.slice(0, 10) === iso);
-
+        <div className="grid grid-cols-7 text-center gap-y-1">
+          {cells.map((date,idx)=>{
+            if(!date) return <div key={`e-${idx}`}/>;
+            const iso=toISODate(date);
+            const isToday=iso===todayISO;
+            const isSelected=iso===selectedISO;
+            const hasEvents=schedules.some(s=>s.startAt.slice(0,10)===iso);
             return (
-              <button
-                key={iso}
-                onClick={() => onDateChange(date)}
-                className={cn(
-                  'relative mx-auto flex h-9 w-9 items-center justify-center rounded-polaris-pill text-polaris-body3 font-semibold transition-colors',
-                  isSelected
-                    ? 'bg-accent-brand-normal text-static-white shadow-polaris-sm'
-                    : isToday
-                      ? 'bg-accent-brand-bg text-accent-brand-normal'
-                      : 'text-label-neutral hover:bg-interaction-hover'
-                )}
+              <button key={iso} onClick={()=>onDateChange(date)}
+                className={cn('relative flex flex-col items-center justify-center w-8 h-8 mx-auto rounded-full text-[12px] font-semibold transition-all',
+                  isSelected ? 'text-white shadow-md' :
+                  isToday ? 'font-bold ring-2 ring-offset-1 text-primary-600 border-primary-100' :
+                  'text-slate-600 hover:bg-slate-100')}
+                style={isSelected ? { background:'linear-gradient(135deg,#3B6EFF,#7C3AED)' } : undefined}
               >
                 {date.getDate()}
                 {hasEvents && !isSelected && (
-                  <span className="absolute bottom-1 h-1 w-1 rounded-polaris-pill bg-accent-brand-normal" />
+                  <span className="absolute bottom-0.5 w-1 h-1 rounded-full bg-primary-500" />
                 )}
               </button>
             );
@@ -179,87 +138,83 @@ export function ScheduleWidget({
         </div>
       </div>
 
-      <div className="scrollbar-hide flex max-h-[500px] flex-col gap-3 overflow-y-auto pr-1">
-        {daySchedules.length > 0 ? (
-          daySchedules.map((schedule) => (
-            <button
+      {/* Detailed Events List */}
+      <div className="flex flex-col gap-3 overflow-y-auto max-h-[500px] pr-1 scrollbar-hide">
+        {daySchedules.length > 0 ? daySchedules.map(schedule => {
+          const style = CATEGORY_STYLE[schedule.category] ?? CATEGORY_STYLE.admin;
+          return (
+            <div
               key={schedule.id}
               onClick={() => onEditEvent(schedule)}
-              className="group flex overflow-hidden rounded-polaris-md border border-line-neutral bg-background-alternative text-left transition-colors hover:border-line-strong hover:bg-layer-surface hover:shadow-polaris-sm"
+              className="flex items-stretch rounded-xl overflow-hidden transition-all cursor-pointer group border border-slate-100 hover:border-slate-200 hover:shadow-md"
+              style={{ backgroundColor: style.bg }}
             >
-              <span className={cn('w-1.5 shrink-0', CATEGORY_BAR[schedule.category])} />
-              <span className="flex-1 p-4">
-                <span className="mb-2 flex items-start justify-between gap-3">
-                  <span>
-                    <span
-                      className={cn(
-                        'inline-flex rounded-polaris-xs px-2 py-0.5 text-polaris-caption1 font-bold',
-                        CATEGORY_TONE[schedule.category]
-                      )}
-                    >
+              <div className="w-1.5 shrink-0" style={{ backgroundColor: style.bar }} />
+              <div className="py-4 px-4 flex-1">
+                <div className="flex items-start justify-between mb-2">
+                  <div>
+                    <span className="text-[10px] font-bold uppercase tracking-wider mb-1 block" style={{ color: style.bar }}>
                       {CATEGORY_LABEL[schedule.category]}
                     </span>
-                    <span className="mt-2 block text-polaris-body2 font-bold text-label-normal">
+                    <p className="text-sm font-extrabold text-slate-800 leading-snug group-hover:text-primary-700 transition-colors">
                       {schedule.title}
-                    </span>
-                  </span>
-                  <span
-                    className={cn(
-                      'shrink-0 rounded-polaris-xs px-2 py-0.5 text-polaris-caption1 font-bold',
-                      STATUS_TONE[schedule.status]
-                    )}
-                  >
+                    </p>
+                  </div>
+                  <span className="text-[10px] font-bold text-slate-400 bg-white/50 px-2 py-0.5 rounded-md">
                     {STATUS_LABEL[schedule.status]}
                   </span>
-                </span>
+                </div>
 
-                <span className="block text-polaris-caption1 font-medium text-label-alternative">
-                  {formatTimeRange(schedule.startAt, schedule.endAt)}
-                </span>
+                <p className="text-[11px] text-slate-500 font-medium mb-3">
+                  {formatTime(schedule.startAt)}
+                </p>
+
+                {/* Memo snippet */}
                 {schedule.memo && (
-                  <span className="mt-2 block text-polaris-body3 leading-relaxed text-label-neutral">
+                  <p className="text-[11px] text-slate-600 leading-relaxed mb-3 line-clamp-2">
                     {schedule.memo}
-                  </span>
+                  </p>
                 )}
 
-                <span className="mt-3 flex flex-wrap gap-1.5">
-                  {schedule.members.map((member) => (
-                    <span
-                      key={member}
-                      className="inline-flex items-center gap-1 rounded-polaris-xs bg-layer-surface px-2 py-0.5 text-polaris-caption1 font-bold text-label-alternative"
-                    >
-                      <Users className="h-3 w-3" />
-                      {member}
-                    </span>
+                {/* Tags Section: Members & Keywords */}
+                <div className="flex flex-wrap gap-1.5 mt-auto">
+                  {schedule.members && schedule.members.length > 0 && (
+                    <div className="flex items-center gap-1 bg-white/60 px-2 py-0.5 rounded-md text-[9px] font-bold text-slate-500">
+                      <Users className="h-2.5 w-2.5" />
+                      {schedule.members.join(', ')}
+                    </div>
+                  )}
+                  {schedule.keywords && schedule.keywords.map(kw => (
+                    <div key={kw} className="flex items-center gap-1 bg-white/80 px-2 py-0.5 rounded-md text-[9px] font-bold text-primary-600">
+                      <Hash className="h-2.5 w-2.5 opacity-50" />
+                      {kw}
+                    </div>
                   ))}
-                  {schedule.keywords.map((keyword) => (
-                    <span
-                      key={keyword}
-                      className="inline-flex items-center gap-1 rounded-polaris-xs bg-accent-brand-bg px-2 py-0.5 text-polaris-caption1 font-bold text-accent-brand-normal"
-                    >
-                      <Hash className="h-3 w-3" />
-                      {keyword}
-                    </span>
-                  ))}
-                </span>
-              </span>
-            </button>
-          ))
-        ) : (
-          <div className="rounded-polaris-md border border-dashed border-line-normal bg-background-alternative px-4 py-10 text-center">
-            <p className="text-polaris-body3 font-semibold text-label-neutral">등록된 일정이 없습니다.</p>
-            <p className="mt-1 text-polaris-caption1 text-label-assistive">오늘의 사역 흐름을 추가해보세요.</p>
+                </div>
+              </div>
+            </div>
+          );
+        }) : (
+          <div className="rounded-xl border-2 border-dashed border-slate-100 flex flex-col items-center justify-center py-12 gap-3">
+            <div className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center">
+              <ChevronRight className="h-5 w-5 text-slate-200" />
+            </div>
+            <p className="text-xs text-slate-400 font-medium text-center leading-relaxed">
+              등록된 일정이 없습니다.<br/>
+              평안한 하루를 설계해보세요.
+            </p>
           </div>
         )}
       </div>
 
-      <button
-        onClick={() => onAddEvent(selectedDate)}
-        className="mt-auto flex h-11 w-full items-center justify-center gap-2 rounded-polaris-sm bg-accent-action-normal text-polaris-body2 font-bold text-static-white transition-colors hover:bg-accent-action-strong"
+      {/* Add Event CTA - Simple Gray Style as requested before */}
+      <button onClick={()=>onAddEvent(selectedDate)}
+        className="flex items-center justify-center gap-2 w-full py-3 text-sm font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition-all mt-auto"
       >
         <Plus className="h-4 w-4" />
         일정 추가
       </button>
-    </section>
+
+    </div>
   );
 }
